@@ -1,0 +1,52 @@
+<?php
+
+/**
+ * @file
+ * Test file for page_transition module.
+ */
+
+/**
+ * Default test case for the page_transition module.
+ *
+ * @ingroup page_transition
+ */
+class PageTransitionTestCase extends DrupalWebTestCase {
+  
+  /**
+   * {@inheritdoc}
+   */
+  public static function getInfo() {
+    return array(
+	  'name' => 'Page Transition Test Case',
+	  'description' => 'Functional test for Page Transition Module',
+	  'group' => 'Page Transition',
+	);
+  }
+  
+  /**
+   * {@inheritdoc}
+   */
+  function setUp() {
+    parent::setUp('page_transition');
+	
+	$permissions = array(
+      'administer page transition',
+    );
+    $this->admin_user = $this->drupalCreateUser($permissions);
+    $this->drupalLogin($this->admin_user);
+  }
+  
+  /**
+   * Test site working properly after installs the module.
+   */
+  function testPageTranstionPageLoads() {
+    $paths = array(
+	  '/admin/config/page_transition/manage',
+	);
+	foreach($paths as $path) {
+	  $this->drupalGet($path);
+	  $this->assertResponse(200, '200 response for the path ' . $path);
+	}
+  }
+  
+}

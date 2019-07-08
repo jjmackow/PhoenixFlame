@@ -1,0 +1,209 @@
+<?php
+/**
+ * @file
+ * Module for incorporating ScrollMagic library into Drupal.
+ */
+
+
+define('SCROLLMAGIC_VENDOR_URL', 'http://scrollmagic.io');
+define('SCROLLMAGIC_DOWNLOAD_URL', 'https://github.com/janpaepke/ScrollMagic/tarball/master');
+define('SCROLLMAGIC_DOWNLOAD_FILE_URL', 'https://github.com/janpaepke/ScrollMagic/tarball/master');
+define('SCROLLMAGIC_EXAMPLES_URL', 'http://scrollmagic.io/examples/');
+define('SCROLLMAGIC_DOCUMENTATION_URL', 'http://scrollmagic.io/docs/index.html');
+define('SCROLLMAGIC_PROJECT_URL', 'https://www.drupal.org/sandbox/celebratedrupal/2769469');
+define('GREENSOCK_VENDOR_URL', 'http://greensock.com');
+define('GREENSOCK_PROJECT_URL', 'https://www.drupal.org/sandbox/celebratedrupal/2772421');
+
+/**
+ * Implements hook_help().
+ */
+function scrollmagic_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#scrollmagic':
+      return _scrollmagic_get_help_message();
+  }
+}
+
+/**
+ * Implements hook_libraries_info().
+ */
+function scrollmagic_libraries_info() {
+  // Add ScrollMagic Library.
+  $libraries['scrollmagic'] = array(
+    'name' => 'ScrollMagic Libraries',
+    'vendor url' => SCROLLMAGIC_VENDOR_URL,
+    'download url' => SCROLLMAGIC_DOWNLOAD_URL,
+    'download file url' => SCROLLMAGIC_DOWNLOAD_FILE_URL,
+    'files' => array(
+      'js' => array(
+        'scrollmagic/minified/ScrollMagic.min.js' => array(),
+        'scrollmagic/minified/plugins/animation.gsap.min.js' => array(),
+        'scrollmagic/minified/plugins/debug.addIndicators.min.js' => array(),
+      )
+    ),
+    'version arguments' => array(
+      'file' => 'scrollmagic/minified/ScrollMagic.min.js',
+      'pattern' => '/([23]\.\d\.\d)/',
+    ),
+  );
+
+  return $libraries;
+}
+
+/**
+ * Implements hook_page_build().
+ */
+function scrollmagic_page_build(&$page) {
+  global $theme;
+
+  // Load up the Scroll Magic Libraries on desired pages.
+  $current_theme = $theme;
+  $pages_variable_name = 'scrollmagic_' . $current_theme . '_pages';
+  $visibility_variable_name = 'scrollmagic_' . $current_theme . '_visibility';
+  $scrollmagic_pages = drupal_strtolower(variable_get($pages_variable_name, ''));
+  $scrollmagic_visibility = variable_get($visibility_variable_name, BLOCK_VISIBILITY_NOTLISTED);
+  if (!empty($scrollmagic_pages)) {
+    if ($scrollmagic_visibility < BLOCK_VISIBILITY_PHP) {
+      // We only load the library on desired pages for this theme.
+      $path = drupal_strtolower(drupal_get_path_alias($_GET['q']));
+      // Compare the lowercase internal and lowercase path alias (if any).
+      $page_match = drupal_match_path($path, $scrollmagic_pages);
+      if ($path != $_GET['q']) {
+        $page_match = $page_match || drupal_match_path($_GET['q'], $scrollmagic_pages);
+      }
+      // When $block->visibility has a value of 0 (BLOCK_VISIBILITY_NOTLISTED),
+      // the scrollmagic libraries are loaded on all pages except those listed in
+      // $scrollmagic_pages. When set to 1 (BLOCK_VISIBILITY_LISTED), it is
+      // displayed only on those pages listed in $scrollmagic_pages.
+      $page_match = !($scrollmagic_visibility xor $page_match);
+    }
+    elseif (module_exists('php')) {
+      $page_match = php_eval($scrollmagic_pages);
+    }
+    else {
+      $page_match = FALSE;
+    }
+  }
+  else {
+    // There is no page configuration for theme.
+    $page_match = ($scrollmagic_visibility == BLOCK_VISIBILITY_NOTLISTED);
+  }
+  if ($page_match) {
+    // There is a match. We load the Scroll Magic libraries.
+    libraries_load('scrollmagic');
+  }
+}
+/**
+ * Implements hook_form_FORM_ID_alter() for system_theme_settings().
+ *
+ * Add a new configuration option to each theme's configuration page to set the
+ * pages where the wow.js library will be loaded. The library will be loaded in
+ * every page by default.
+ */
+function scrollmagic_form_system_theme_settings_alter(&$form, &$form_state) {
+  if (isset($form_state['build_info']['args'][0]) && ($theme = $form_state['build_info']['args'][0])) {
+    $form['scrollmagic'] = array(
+      '#title' => t('Scroll Magic Javascript library'),
+      '#type' => 'fieldset',
+      '#weight' => 35,
+      '#collapsible' => TRUE,
+      '#collapsed' => FALSE,
+    );
+    $form['scrollmagic_theme'] = array('#type' => 'value', '#value' => $theme);
+    $visibility_default = variable_get('scrollmagic_' . $theme . '_visibility', BLOCK_VISIBILITY_NOTLISTED);
+    $pages_default = variable_get('scrollmagic_' . $theme . '_pages', '');
+    $access = user_access('use PHP for settings');
+    if ($visibility_default == BLOCK_VISIBILITY_PHP && !$access) {
+      $form['scrollmagic']['wowjs_visibility'] = array(
+        '#type' => 'value',
+        '#value' => BLOCK_VISIBILITY_PHP,
+      );
+      $form['scrollmagic']['scrollmagic_pages'] = array(
+        '#type' => 'value',
+        '#value' => $pages_default,
+      );
+    }
+    else {
+      $options = array(
+        BLOCK_VISIBILITY_NOTLISTED => t('All pages except those listed'),
+        BLOCK_VISIBILITY_LISTED => t('Only the listed pages'),
+      );
+      $description = t("Specify pages where the Scroll Magic libraries will be loaded by using their paths. Enter one path per line. The '*' character is a wildcard. Example paths are %blog for the blog page and %blog-wildcard for every personal blog. %front is the front page. Please note that if you were previously using the greensock module, this input form has replaced the one used for the greensock library.", array(
+        '%blog' => 'blog',
+        '%blog-wildcard' => 'blog/*',
+        '%front' => '<front>',
+      ));
+
+      if (module_exists('php') && $access) {
+        $options += array(BLOCK_VISIBILITY_PHP => t('Pages on which this PHP code returns <code>TRUE</code> (experts only)'));
+        $title = t('Pages where Scroll Magic libraries will be loaded (or PHP code)');
+        $description .= ' ' . t('If the PHP option is chosen, enter PHP code between %php. Note that executing incorrect PHP code can break your Drupal site.', array('%php' => '<?php ?>'));
+      }
+      else {
+        $title = t('Pages where Scroll Magic libraries will be loaded');
+      }
+      $form['scrollmagic']['scrollmagic_visibility'] = array(
+        '#type' => 'radios',
+        '#title' => t('Load Scroll Magic libraries on specific pages'),
+        '#options' => $options,
+        '#default_value' => $visibility_default,
+      );
+
+      $form['scrollmagic']['scrollmagic_pages'] = array(
+        '#title' => $title,
+        '#type' => 'textarea',
+        '#description' => $description,
+        '#default_value' => $pages_default,
+      );
+    }
+
+    $form['#submit'][] = 'scrollmagic_form_system_theme_settings_submit';
+  }
+}
+
+/**
+ * Form submission handler for scrollmagic_form_system_theme_settings_alter().
+ */
+function scrollmagic_form_system_theme_settings_submit($form, &$form_state) {
+  $theme = $form_state['values']['scrollmagic_theme'];
+  $scrollmagic_pages = $form_state['values']['scrollmagic_pages'];
+  $scrollmagic_visibility = $form_state['values']['scrollmagic_visibility'];
+  variable_set('scrollmagic_' . $theme . '_pages', $scrollmagic_pages);
+  variable_set('scrollmagic_' . $theme . '_visibility', $scrollmagic_visibility);
+}
+
+/**
+ * Helper Function. Returns the help message.
+ */
+function _scrollmagic_get_help_message() {
+  $message = '<p>' . t("The ScrollMagic module integrates the <a href='@scrollmagic_link' target='_blank' title='Click here to visit ScrollMagic libray website.'>ScrollMagic JavaScript library</a> into Drupal. ", array("@scrollmagic_link" => SCROLLMAGIC_VENDOR_URL));
+  $message .= t("ScrollMagic is a JavaScript library for on-scroll triggers. It is one of the few actively maintained libraries of its kind, and uses the flexible <a href='@greensock_vendor_url' target='blank'>Greensock</a> animation library for animation effects like parallax. For guidance on configuration and setup visit the <a href='@scrollmagic_project_url' target='_blank' title='For guidance on setup and configuratgion visit the ScrollMagic JS Drupal project.'>ScrollMagic</a> Drupal project page, and get started incorporating modern Javascript effects into your Drupal sites.", array("@scrollmagic_project_url" => SCROLLMAGIC_PROJECT_URL, "@greensock_vendor_url" => GREENSOCK_VENDOR_URL));
+  $message .= '</p>';
+  $message .= '<p>' . t("Please be sure to install the <a href='@greensock_project' target='_blank' title='Click here to visit the Greensock project page'>Greensock</a> module for animation effects, as this module is dependent on the greensock module.");
+  $message .= '</p>';
+  $message .= '<p>';
+  $message .= t("The ScrollMagic library creator provides a complete set of examples to get you started incorporating animation and on-scroll effects on your Drupal site using JavaScript code. Examples range from simple to advanced, visit the <a href='@examples_scrollmagic_url' target='_blank' title='Click here to visit ScrollMagic JS website.'>ScrollMagic examples page</a> to learn more.", array(
+    "@examples_scrollmagic_url" => SCROLLMAGIC_EXAMPLES_URL));
+  $message .= '</p>';
+  $message .= '<p>';
+  $message .= t("By default, this module will load the ScrollMagic library on every page of your website. If you only want to load the ScrollMagic library on certain pages, go to your theme configuration settings page and provide the list of pages that you want the ScrollMagic library to be loaded (or not loaded). This module integrates with Drupal's core PHP filter module, so you can load the ScrollMagic library on those pages where a certain PHP expression returns true.");
+  $message .= '</p>';
+  $message .= '<h2>Resources</h2>';
+  $message .= '<p>';
+  $message .= '<ul>';
+  $message .= '<li>';
+  $message .= t("<a href='@examples_scrollmagic_url' target='_blank' title='Learn how to use the ScrollMagic JS library'>See examples of how to use the ScrollMagic JS library</a>",
+    array("@examples_scrollmagic_url" => SCROLLMAGIC_EXAMPLES_URL));
+  $message .= '</li>';
+  $message .= '<li>';
+  $message .= t("<a href='@scrollmagic_documentation_url' target='_blank' title='Read Documentation for the ScrollMagic JS library'>Read Documentation for the ScrollMagic JS library</a>",
+    array("@scrollmagic_documentation_url" => SCROLLMAGIC_DOCUMENTATION_URL));
+  $message .= '</li>';
+  $message .= '<li>';
+  $message .= t("<a href='@greensock_vendor_url' target='_blank' title='Learn more about how to use the Greensock Animation library'>Learn more about how to use the Greensock Animation library</a>",
+    array("@greensock_vendor_url" => GREENSOCK_VENDOR_URL));
+  $message .= '</li>';
+  $message .= '</ul>';
+  $message .= '</p>';
+  return $message;
+}

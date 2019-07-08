@@ -1,0 +1,107 @@
+<?php
+
+/**
+ * @file
+ * Tests for Hide Field Label module.
+ */
+
+/**
+ * Tests general Hide Field Label functionality.
+ */
+class HideFieldLabelTestCase extends FieldUITestCase {
+
+  /**
+   * User with administer content types permission
+   *
+   * @var object|false
+   */
+  public $admin_user;
+
+  /**
+   * Content type name.
+   *
+   * @var string
+   */
+  public $type;
+
+  /**
+   * Valid URL name with hyphens instead of underscores.
+   *
+   * @var string
+   */
+  public $hyphen_type;
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Hide Field Label Test',
+      'description' => 'Ensure that field label disappears on widget form.',
+      'group' => 'Hide Field Label',
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  function setUp() {
+    DrupalWebTestCase::setUp(array('field_test', 'hide_field_label'));
+
+    // Create content type, with underscores.
+    $type_name = strtolower($this->randomName(8)) . '_test';
+    $type = $this->drupalCreateContentType(array('name' => $type_name, 'type' => $type_name));
+    $this->type = $type->type;
+
+    // Store a valid URL name, with hyphens instead of underscores.
+    $this->hyphen_type = str_replace('_', '-', $this->type);
+
+    // Create test user.
+    $admin_user = $this->drupalCreateUser(array(
+      'access content',
+      'administer content types',
+      'create ' . $this->type . ' content',
+    ));
+    $this->drupalLogin($admin_user);
+  }
+
+  /**
+   * Create field with 'Hide label for this field' option checked.
+   */
+  public function testHideFieldLabel() {
+    $bundle_path = 'admin/structure/types/manage/' . $this->hyphen_type;
+
+    // Create a basic text field.
+    $edit = array(
+      'fields[_add_new_field][type]' => 'text',
+      'fields[_add_new_field][widget_type]' => 'text_textfield',
+      'fields[_add_new_field][label]' => 'Hide Field Label Test',
+      'fields[_add_new_field][field_name]' => 'hide_field_label_test',
+    );
+    $instance_settings = array();
+    $this->fieldUIAddNewField($bundle_path, $edit, array(), $instance_settings);
+
+    // Go to the node add page.
+    $this->drupalGet('node/add/' . $this->hyphen_type);
+
+    // Assert field title.
+    $this->assertText('Hide Field Label Test', 'Field title is shown');
+
+    // Go to the field edit page.
+    $this->drupalGet($bundle_path . '/fields/field_hide_field_label_test');
+
+    // Update 'Hide label for this field' setting.
+    $edit = array(
+      'instance[hide_field_label]' => 1,
+    );
+    $this->drupalPost(NULL, $edit, t('Save settings'));
+
+    // Go to the node add page one more time.
+    $this->drupalGet('node/add/' . $this->hyphen_type);
+
+    // Assert no field title.
+    $elements = $this->xpath('//input[@name="field_hide_field_label_test[und][0][value]"]/preceding-sibling::label[@for="edit-field-hide-field-label-test-und-0-value" and @class="element-invisible"]');
+    $this->assertTrue(isset($elements[0]), 'Field title is not shown');
+  }
+
+}

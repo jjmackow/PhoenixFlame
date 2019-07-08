@@ -1,0 +1,319 @@
+<?php
+
+/**
+ * @file
+ * Tests for Amazon Wysiwyg module.
+ */
+class AmazonWysiwygTest extends DrupalWebTestCase {
+  protected $admin_user;
+  protected $node;
+  protected $amazon_items;
+
+  /**
+   * @inheritdoc
+   *
+   * @return array
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Amazon Wysiwyg',
+      'description' => 'Tests that Amazon Wysiwyg renders correctly.',
+      'group' => 'Amazon',
+    );
+  }
+
+  /**
+   * @inheritdoc
+   */
+  protected function setUp() {
+    // Enable modules.
+    $modules = array(
+      'amazon',
+      'node',
+      'amazon_test',
+      'amazon_wysiwyg',
+      'wysiwyg',
+    );
+    parent::setUp($modules);
+
+    // Module settings.
+    variable_set('amazon_refresh_schedule', REQUEST_TIME + 3600);
+    variable_set('amazon_aws_access_key', $this->randomString());
+    variable_set('amazon_aws_secret_access_key', $this->randomString());
+    variable_set('amazon_default_locale', 'US');
+    variable_set('amazon_locale_US_associate_id', 'test-20');
+  }
+
+  /**
+   * Check that an element exists in HTML markup.
+   *
+   * @param       $xpath
+   *   An XPath expression.
+   * @param array $arguments
+   *   (optional) An associative array of XPath replacement tokens to pass to
+   *   DrupalWebTestCase::buildXPathQuery().
+   * @param       $message
+   *   The message to display along with the assertion.
+   * @param       $group
+   *   The type of assertion - examples are "Browser", "PHP".
+   *
+   * @return
+   *   TRUE if the assertion succeeded, FALSE otherwise.
+   */
+  private function assertElementByXPath($xpath, array $arguments = array(), $message, $group = 'Other') {
+    $elements = $this->xpath($xpath, $arguments);
+
+    return $this->assertTrue(!empty($elements[0]), $message, $group);
+  }
+
+  /**
+   * Helper to create admin user and login.
+   */
+  private function adminLogin() {
+    // Create Admin user.
+    $this->admin_user = $this->drupalCreateUser(array(
+        'administer content types',
+        'administer nodes',
+        'create article content',
+        'edit any article content',
+        'administer fields',
+        'administer filters',
+        'administer amazon',
+      )
+    );
+    $this->drupalLogin($this->admin_user);
+
+    $this->amazon_items = amazon_test_get_amazon_items();
+  }
+
+  /**
+   * Helper to configure the Wysiwyg plugin.
+   */
+  private function configureWysiwyg() {
+    // @todo This test requires TinyMCE. Need to find a way to add this library.
+    // @todo Add test for filtered_html
+    $this->drupalGet('admin/config/content/wysiwyg');
+    $this->assertResponse(200);
+    $edit = array(
+      'formats[_new_profile][name]' => 'full_html',
+      'formats[_new_profile][editor]' => 'tinymce',
+    );
+    $this->drupalPost(NULL, $edit, t('Create profile'));
+    $edit = array(
+      'buttons[drupal][amazon_wysiwyg]' => '1',
+    );
+    $this->drupalPost(NULL, $edit, t('Save'));
+  }
+
+  /**
+   * Helper to configure Input filters.
+   */
+  private function configureInputFilters() {
+    $this->drupalGet('admin/config/content/formats/full_html');
+    $this->assertResponse(200);
+    $edit = array(
+      "filters[amazon_wysiwyg][status]" => '1',
+      // Drupal ships with 3 roles by default, ticking the new user created by the test.
+      "roles[4]" => '1',
+    );
+    $this->drupalPost(NULL, $edit, t('Save configuration'));
+  }
+
+  /**
+   * Helper to create a node.
+   */
+  private function createNode() {
+    $body_value = '<!--amazon-widget{"data_id":"1498486197951","asin":"' . $this->amazon_items[0]['asin'] . '","style":"buy_now_wide","locale":"US"}-->';
+    $this->node = $this->drupalCreateNode(
+      array(
+        'type' => 'article',
+        'body' => array(
+          LANGUAGE_NONE => array(
+            array(
+              'value' => $body_value,
+              'format' => 'full_html',
+              'summary' => '',
+            ),
+          ),
+        )
+      )
+    );
+  }
+
+  /**
+   * Helper to visit a node;
+   */
+  private function visitNode() {
+    $this->drupalGet('node/' . $this->node->nid);
+    $this->assertResponse(200);
+  }
+
+  /**
+   * Helper to edit a node;
+   */
+  private function editNode() {
+    $this->drupalGet('node/' . $this->node->nid . '/edit');
+    $this->assertResponse(200);
+  }
+
+  /**
+   * Test the formatters.
+   */
+  public function testFieldFormatters() {
+    // Login as admin.
+    $this->adminLogin();
+
+    // Configure input filters.
+    $this->configureInputFilters();
+
+    // Configure Wysiwyg.
+    $this->configureWysiwyg();
+
+    // Test node.
+    $this->createNode();
+    $this->editNode();
+    $this->assertRaw("amazon_wysiwyg/amazon_wysiwyg.css", "Amazon Wysiwyg CSS in present");
+    $this->assertRaw("amazon_wysiwyg/plugins/amazon_wysiwyg/amazon_wysiwyg.js", "Amazon Wysiwyg js in present");
+    $this->assertPattern("/configs.*tinymce.*drupal_amazon_wysiwyg/", "Amazon Wysiwyg button in present");
+    $this->assertElementByXPath(
+      '//div[contains(@class, :class1)]//textarea[contains(text(), :placeholder)]',
+      array(
+        ':class1' => 'form-item-body-und-0-value',
+        ':placeholder' => $this->node->body[LANGUAGE_NONE][0]['value'],
+      ),
+      "Amazon Wysiwyg placeholder in present in the body");
+
+    $test_styles = $this->amazon_test_get_amazon_styles();
+    // Unset these displays, the theme functions are wrong on the contrib module.
+    unset($test_styles['inline']);
+    unset($test_styles['plain']);
+
+    foreach ($test_styles as $style => $details) {
+      // Test that the markup is correct.
+      $this->editNode();
+      $body_value = 'Testing Amazon Wysiwyg (' . $style . ') style';
+      $body_value .= '<!--amazon-widget{"data_id":"1498486197951","asin":"' . $this->amazon_items[0]['asin'] . '","style":"' . $style . '","locale":"US"}-->';
+      $edit = array();
+      $edit["body[und][0][value]"] = $body_value;
+      $this->drupalPost(NULL, $edit, t('Save'));
+
+      // Test markup.
+      $xpath = $details['xpath'];
+      foreach ($xpath as $item) {
+        $xpath_query = $item['query'];
+        $xpath_values = $item['values'];
+
+        // Fill in the value for style.
+        if (isset($xpath_values[':style_class'])) {
+          $xpath_values[':style_class'] = "amazon-item-$style";
+        }
+
+        $this->assertElementByXPath($xpath_query, $xpath_values, "Style '$style' was rendered correctly.");
+      }
+    }
+  }
+
+  /**
+   * Provides an list of styles to be tested.
+   */
+  private function amazon_test_get_amazon_styles() {
+    // Xpath to test title.
+    $xpath_title = array(
+      'query' => '//div[contains(@class, :container_class)' .
+        ' and contains(@class, :item_class)' .
+        ' and contains(@class, :style_class)' .
+        ' and contains(@class, :locale_class)]' .
+        '//a[text()=:link_text][contains(@href, :track_id)]',
+      'values' => array(
+        ':container_class' => 'amazon-product--container',
+        ':item_class' => 'amazon-item',
+        ':style_class' => "amazon-item-default",
+        ':link_text' => 'The Complete Matrix Trilogy',
+        ':track_id' => variable_get('amazon_locale_US_associate_id'),
+        ':locale_class' => 'locale-' . strtolower(variable_get('amazon_default_locale')),
+      ),
+    );
+
+    // Xpath to test Buy now button.
+    $xpath_button = array(
+      'query' => '//div[contains(@class, :container_class)]' .
+        '//span[contains(@class, :button_class)]' .
+        '//a[text()=:link_text][contains(@href, :track_id)]',
+      'values' => array(
+        ':container_class' => 'amazon-product--container',
+        ':button_class' => 'button',
+        ':link_text' => 'Buy now',
+        ':track_id' => variable_get('amazon_locale_US_associate_id'),
+      ),
+    );
+
+    // Xpath to test logo.
+    $xpath_logo = array(
+      'query' => '//div[contains(@class, :container_class)]' .
+        '//span[contains(@class, :logo_class)]' .
+        '//a[contains(@href, :track_id)]' .
+        '//img[contains(@class, :img_class)][contains(@src, "images/amazon_logo.svg")]',
+      'values' => array(
+        ':container_class' => 'amazon-product--container',
+        ':logo_class' => 'logo',
+        ':img_class' => 'amazon-logo',
+        ':track_id' => variable_get('amazon_locale_US_associate_id'),
+      ),
+    );
+
+    // Xpath to test gallery.
+    $xpath_gallery = array(
+      'query' => '//div[contains(@class, :item_class)]' .
+        '//img[@height>1 and @width>1]' .
+        '[contains(@alt, :alt_text)]' .
+        '[contains(@title, :title_text)]' .
+        '[contains(@src, :src)]',
+      'values' => array(
+        ':container_class' => 'amazon-product--container',
+        ':item_class' => 'amazon-item',
+        ':alt_text' => 'Image of The Complete Matrix Trilogy',
+        ':title_text' => 'The Complete Matrix Trilogy',
+        ':src' => 'images-amazon.com/images',
+      ),
+    );
+
+    return array(
+      'default' => array(
+        'xpath' => array($xpath_title, $xpath_gallery),
+      ),
+      'default_gallery' => array(
+        'xpath' => array($xpath_title, $xpath_gallery),
+      ),
+      'details' => array(
+        'xpath' => array($xpath_title, $xpath_gallery),
+      ),
+      'details_gallery' => array(
+        'xpath' => array($xpath_title, $xpath_gallery),
+      ),
+      'thumbnail' => array(
+        'xpath' => array($xpath_gallery),
+      ),
+      'thumbnail_gallery' => array(
+        'xpath' => array($xpath_gallery),
+      ),
+      'medium' => array(
+        'xpath' => array($xpath_gallery),
+      ),
+      'medium_gallery' => array(
+        'xpath' => array($xpath_gallery),
+      ),
+      'large' => array(
+        'xpath' => array($xpath_gallery),
+      ),
+      'large_gallery' => array(
+        'xpath' => array($xpath_gallery),
+      ),
+      'buy_now_wide' => array(
+        'xpath' => array($xpath_title, $xpath_button, $xpath_logo,  $xpath_gallery),
+      ),
+      'buy_now_medium' => array(
+        'xpath' => array($xpath_title, $xpath_button, $xpath_logo, $xpath_gallery),
+      )
+    );
+  }
+}

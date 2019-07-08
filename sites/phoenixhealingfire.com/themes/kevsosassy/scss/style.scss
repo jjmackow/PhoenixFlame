@@ -1,0 +1,35 @@
+/**
+ * Place your custom styles here.
+ */
+
+@import "compass/css3";
+@import "compass/utilities";
+@import "compass/css3/transform";
+
+
+// Base-theme overrides.
+@import "partials/variables";
+@import "partials/bg_mixins";
+@import "partials/easy_social";
+@import "partials/mxs Xenu";
+@import "partials/mm-fresh";
+@import "partials/webform";
+@import "partials/fullcalendar";
+@import "partials/custom";
+@import "partials/custom_admin";
+@import "partials/board";
+@import "partials/about";
+@import "partials/ncos_icons";
+@import "partials/resume";
+@import "partials/superfish-style";
+@import "partials/admin_review";
+@import "partials/magnifico";
+@import "partials/shadow_fp";
+@import "partials/three";
+@import "partials/slick";
+@import "partials/fp_parrallax";
+@import "partials/contextual_flyout_links";
+@import "partials/gallery";
+@import "partials/responsive_menu";
+@import "partials/overrides";
+@import "partials/responsive";

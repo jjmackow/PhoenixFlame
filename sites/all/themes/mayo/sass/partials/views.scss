@@ -1,0 +1,35 @@
+.view-front-page-image-menu{
+  .view-content{
+    .node{
+        border-width: 0px;
+    }
+    ul{
+    }
+    li{
+      list-style-image: none;
+      display: inline-block;
+      width :auto;
+      border: none;
+    }
+    .field-name-field-url{
+      .field-item{
+        @include rounded-corners($button-edge);
+        margin: 0px;
+        a{
+          @include transition();
+          display: block;
+          width: 100%;
+          padding: 5px 10px;
+          margin: 5px;
+          @include rounded-corners($button-edge);
+          background: red;
+          &:hover,
+          &:focus {
+            padding: 5px 15px 5px 5px;
+            text-decoration: none;
+          }
+        }
+      }
+    }
+  }  
+}

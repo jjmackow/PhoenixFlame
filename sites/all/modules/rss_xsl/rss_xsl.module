@@ -1,0 +1,154 @@
+<?php
+
+/**
+ * @file
+ * RSS XSL hook implementations.
+ */
+
+/**
+ * Implements hook_help().
+ */
+function rss_xsl_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#rss_xsl':
+      return check_markup(file_get_contents(drupal_get_path('module', 'rss_xsl') . '/README.md'));
+  }
+}
+
+/**
+ * Implements hook_menu().
+ */
+function rss_xsl_menu() {
+  $items['rss.xsl'] = array(
+    'page callback'   => 'rss_xsl_xsl',
+    // No access restriction required for stylesheets (as per CSS).
+    'access callback' => TRUE,
+  );
+  $items['admin/config/services/rss-xsl'] = array(
+    'title'            => 'RSS XSL',
+    'description'      => 'Configure help text for RSS XSL transformation.',
+    'page callback'    => 'drupal_get_form',
+    'page arguments'   => array('rss_xsl_config_form'),
+    'access arguments' => array('administer site configuration'),
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function rss_xsl_menu_alter(&$items) {
+  $items['rss.xml']['page callback'] = 'rss_xsl_xml';
+}
+
+/**
+ * Implements hook_permission().
+ */
+function rss_xsl_permission() {
+  return array(
+    'administer xsl_rss' => array(
+      'title' => t('Administer RSS XSL module'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_theme().
+ */
+function rss_xsl_theme($existing, $type, $theme, $path) {
+  return array(
+    'rss_xsl_xsl' => array(
+      'file'      => 'rss_xsl.theme.inc',
+      'variables' => array(
+        'html' => '',
+      ),
+    ),
+    'rss_xsl_xsl_body' => array(
+      'render element' => 'content',
+      'template'  => 'rss_xsl-xsl-body',
+      'path'      => drupal_get_path('module', 'rss_xsl') . '/templates',
+      'variables' => array(
+        'rss_message' => '',
+      ),
+    ),
+    'rss_xsl_xsl_footer' => array(
+      'render element' => 'content',
+      'template'  => 'rss_xsl-xsl-footer',
+      'path'      => drupal_get_path('module', 'rss_xsl') . '/templates',
+    ),
+    'rss_xsl_xsl_header' => array(
+      'render element' => 'content',
+      'template'  => 'rss_xsl-xsl-header',
+      'path'      => drupal_get_path('module', 'rss_xsl') . '/templates',
+    ),
+  );
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function rss_xsl_views_api() {
+  return array(
+    'api' => 3.0,
+  );
+}
+
+/**
+ * Form rss_xsl_config_form.
+ */
+function rss_xsl_config_form() {
+  $form['rss_xsl_rss_message'] = array(
+    '#type'          => 'textarea',
+    '#title'         => t('RSS help message'),
+    '#default_value' => variable_get('rss_xsl_rss_message', '<h3>What is this page?</h3><p>This is an RSS feed. RSS feeds allow you to stay up to date with the latest information.  To subscribe to it, you will need a News Reader or other similar device.</p>'),
+    '#description'   => t('Message to above RSS content after XSL transformation.'),
+  );
+  return system_settings_form($form);
+}
+
+/**
+ * Page callback rss_xsl_xml. Wrapper of node_feed.
+ */
+function rss_xsl_xml($nids = FALSE, $channel = array()) {
+  ob_start('rss_xsl_xml_replace');
+  node_feed($nids, $channel);
+
+  // Content Type 'application/rss+xml; charset=utf-8' causes XSL stylesheets
+  // to be ignored, reducing to text/xml.
+  drupal_add_http_header('Content-Type', 'text/xml; charset=utf-8');
+  ob_end_flush();
+}
+
+/**
+ * Helper rss_xsl_xml_replace. Adds reference to XSL stylesheet.
+ */
+function rss_xsl_xml_replace($buffer) {
+  return str_replace(
+    '<rss ',
+    '<?xml-stylesheet title="XSL_formatting" type="text/xsl" href="/rss.xsl" ?>' . "\n" . '<rss ',
+    $buffer
+  );
+}
+
+/**
+ * Page callback rss_xsl_xsl.
+ */
+function rss_xsl_xsl() {
+
+  // Obtain maintenance page markup.
+  $html = theme('maintenance_page', array('content' => 'rss_xsl'));
+
+  // Insert XSL body (instead of intended maintenance message).
+  $rss_message = variable_get('rss_xsl_rss_message', '<h3>What is this page?</h3><p>This is an RSS feed. RSS feeds allow you to stay up to date with the latest information.  To subscribe to it, you will need a News Reader or other similar device.</p>');
+  $html = str_replace('rss_xsl', theme('rss_xsl_xsl_body', array('rss_message' => $rss_message)), $html);
+
+  // Remove DOCTYPE declaration and any html entities, these are invalid in an
+  // XSL stylesheet.
+  $html = preg_replace('/<!DOCTYPE[^>[]*(\[[^]]*\])?>/', '', $html);
+  $html = html_entity_decode($html);
+
+  // Set required content type.
+  drupal_add_http_header('Content-Type', 'text/xsl; charset=utf-8');
+  print theme('rss_xsl_xsl', array('html' => $html));
+  drupal_exit();
+}

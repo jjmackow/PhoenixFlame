@@ -1,0 +1,283 @@
+<?php
+/**
+ * @file
+ * Registers a basic smiley set named Kolobok with the Smiley API.
+ */
+
+/**
+ * Implements hook_smiley_replacements().
+ */
+function smiley_kolobok_smiley_replacements() {
+  $smileys = array();
+  $path = base_path() . drupal_get_path('module', 'smiley_kolobok') . '/images';
+
+  $smileys['O:-)'] = $path . '/angel.gif';
+  $smileys['O:)'] = $path . '/angel.gif';
+  $smileys['O+)'] = $path . '/angel.gif';
+  $smileys['O=)'] = $path . '/angel.gif';
+  $smileys['0:-)'] = $path . '/angel.gif';
+  $smileys['0:)'] = $path . '/angel.gif';
+  $smileys['0+)'] = $path . '/angel.gif';
+  $smileys['0=)'] = $path . '/angel.gif';
+  $smileys['(A)'] = $path . '/angel.gif';
+  $smileys['(a)'] = $path . '/angel.gif';
+
+  $smileys[':-)'] = $path . '/smile.gif';
+  $smileys[':)'] = $path . '/smile.gif';
+  $smileys['+)'] = $path . '/smile.gif';
+  $smileys['=)'] = $path . '/smile.gif';
+  $smileys[':smile:'] = $path . '/smile.gif';
+  $smileys[':-('] = $path . '/sad.gif';
+  $smileys[':('] = $path . '/sad.gif';
+  $smileys['+('] = $path . '/sad.gif';
+  $smileys['=('] = $path . '/sad.gif';
+  $smileys[':-(('] = $path . '/sad.gif';
+  $smileys[':(('] = $path . '/sad.gif';
+  $smileys['+(('] = $path . '/sad.gif';
+  $smileys['=(('] = $path . '/sad.gif';
+  $smileys[':sad:'] = $path . '/sad.gif';
+
+  $smileys[';-)'] = $path . '/wink.gif';
+  $smileys[';)'] = $path . '/wink.gif';
+  $smileys['^_~'] = $path . '/wink.gif';
+  $smileys[':wink:'] = $path . '/wink.gif';
+
+  $smileys[':-P'] = $path . '/blum3.gif';
+  $smileys[':P'] = $path . '/blum3.gif';
+  $smileys[':-p'] = $path . '/blum3.gif';
+  $smileys[':p'] = $path . '/blum3.gif';
+  $smileys['+P'] = $path . '/blum3.gif';
+  $smileys['=P'] = $path . '/blum3.gif';
+  $smileys['+p'] = $path . '/blum3.gif';
+  $smileys['=p'] = $path . '/blum3.gif';
+  $smileys[':-b'] = $path . '/blum3.gif';
+  $smileys[':b'] = $path . '/blum3.gif';
+  $smileys['+b'] = $path . '/blum3.gif';
+  $smileys['=b'] = $path . '/blum3.gif';
+  $smileys[':tongue:'] = $path . '/blum3.gif';
+
+  $smileys['8-)'] = $path . '/dirol.gif';
+  $smileys['8)'] = $path . '/dirol.gif';
+  $smileys['B)'] = $path . '/dirol.gif';
+  $smileys[':COOL:'] = $path . '/dirol.gif';
+  $smileys[':cool:'] = $path . '/dirol.gif';
+
+  $smileys[':-D'] = $path . '/biggrin.gif';
+  $smileys[':D'] = $path . '/biggrin.gif';
+  $smileys['+D'] = $path . '/biggrin.gif';
+  $smileys['=D'] = $path . '/biggrin.gif';
+  $smileys[':biggrin:'] = $path . '/biggrin.gif';
+
+  $smileys[':-['] = $path . '/blush.gif';
+  $smileys[':['] = $path . '/blush.gif';
+  $smileys[";'>"] = $path . '/blush.gif';
+  $smileys[';-.'] = $path . '/blush.gif';
+  $smileys[':blush:'] = $path . '/blush.gif';
+
+  $smileys['=-O'] = $path . '/shok.gif';
+  $smileys['=O'] = $path . '/shok.gif';
+  $smileys['=-o'] = $path . '/shok.gif';
+  $smileys['=0'] = $path . '/shok.gif';
+  $smileys['O_O'] = $path . '/shok.gif';
+  $smileys['O_o'] = $path . '/shok.gif';
+  $smileys['o_O'] = $path . '/shok.gif';
+  $smileys['O_0'] = $path . '/shok.gif';
+  $smileys['o_0'] = $path . '/shok.gif';
+  $smileys['0_O'] = $path . '/shok.gif';
+  $smileys['0_o'] = $path . '/shok.gif';
+
+  $smileys[':-*'] = $path . '/kiss2.gif';
+  $smileys[':*'] = $path . '/kiss2.gif';
+  $smileys[':-{}'] = $path . '/kiss2.gif';
+  $smileys[':{}'] = $path . '/kiss2.gif';
+  $smileys['+{}'] = $path . '/kiss2.gif';
+  $smileys['={}'] = $path . '/kiss2.gif';
+  $smileys['^.^'] = $path . '/kiss2.gif';
+  $smileys[':kiss:'] = $path . '/kiss2.gif';
+  $smileys['*KISS*'] = $path . '/kiss2.gif';
+
+  $smileys[":'("] = $path . '/cray2.gif';
+  $smileys[":'-("] = $path . '/cray2.gif';
+
+  $smileys[':-X'] = $path . '/secret.gif';
+  $smileys[':-x'] = $path . '/secret.gif';
+  $smileys['X:'] = $path . '/secret.gif';
+  $smileys['x:'] = $path . '/secret.gif';
+  $smileys[':-#'] = $path . '/secret.gif';
+  $smileys[':#'] = $path . '/secret.gif';
+  $smileys[':secret:'] = $path . '/secret.gif';
+
+  $smileys['>:o'] = $path . '/aggressive.gif';
+  $smileys['>:O'] = $path . '/aggressive.gif';
+  $smileys['>+O'] = $path . '/aggressive.gif';
+  $smileys['>:o'] = $path . '/aggressive.gif';
+  $smileys['>+o'] = $path . '/aggressive.gif';
+  $smileys[':-@'] = $path . '/aggressive.gif';
+  $smileys[':angry:'] = $path . '/aggressive.gif';
+
+  $smileys[':-|'] = $path . '/fool.gif';
+  $smileys[':|'] = $path . '/fool.gif';
+  $smileys['=|'] = $path . '/fool.gif';
+  $smileys[':-|'] = $path . '/fool.gif';
+
+  $smileys[':-\\'] = $path . '/beee.gif';
+  $smileys[':-/'] = $path . '/beee.gif';
+  $smileys[':\\'] = $path . '/beee.gif';
+  $smileys[':-\\\\'] = $path . '/beee.gif';
+
+  $smileys['*JOKINGLY*'] = $path . '/mosking.gif';
+  $smileys['8P'] = $path . '/mosking.gif';
+  $smileys['8p'] = $path . '/mosking.gif';
+
+  $smileys[']:->'] = $path . '/diablo.gif';
+  $smileys['}:->'] = $path . '/diablo.gif';
+  $smileys[']:>'] = $path . '/diablo.gif';
+  $smileys['}:>'] = $path . '/diablo.gif';
+  $smileys['>:-]'] = $path . '/diablo.gif';
+  $smileys['>:]'] = $path . '/diablo.gif';
+  $smileys['(6)'] = $path . '/diablo.gif';
+  $smileys[':diablo:'] = $path . '/diablo.gif';
+  $smileys['*DIABLO*'] = $path . '/diablo.gif';
+
+  $smileys['[:-}'] = $path . '/music2.gif';
+  $smileys['[:}'] = $path . '/music2.gif';
+  $smileys['[:-}'] = $path . '/music2.gif';
+
+  $smileys['*KISSED*'] = $path . '/air_kiss.gif';
+
+  $smileys[':-!'] = $path . '/bad.gif';
+  $smileys[':!'] = $path . '/bad.gif';
+  $smileys[':-~'] = $path . '/bad.gif';
+  $smileys[';-~'] = $path . '/bad.gif';
+  $smileys[':(~'] = $path . '/bad.gif';
+  $smileys['+(~'] = $path . '/bad.gif';
+  $smileys['=(~'] = $path . '/bad.gif';
+  $smileys[':bad:'] = $path . '/bad.gif';
+
+  $smileys['*TIRED*'] = $path . '/boredom.gif';
+  $smileys['|-0'] = $path . '/boredom.gif';
+  $smileys[':boredom:'] = $path . '/boredom.gif';
+
+  $smileys['*STOP*'] = $path . '/stop.gif';
+  $smileys[':stop:'] = $path . '/stop.gif';
+
+  $smileys['*KISSING*'] = $path . '/kiss3.gif';
+
+  $smileys['@}->--'] = $path . '/give_rose.gif';
+  $smileys['@}-:--'] = $path . '/give_rose.gif';
+  $smileys['@>}--,-`---'] = $path . '/give_rose.gif';
+  $smileys['(F)'] = $path . '/give_rose.gif';
+  $smileys['(f)'] = $path . '/give_rose.gif';
+  $smileys['@}->--'] = $path . '/give_rose.gif';
+
+  $smileys[':GOOD:'] = $path . '/good.gif';
+  $smileys[':good:'] = $path . '/good.gif';
+  $smileys['*GOOD*'] = $path . '/good.gif';
+  $smileys['*THUMBS_UP*'] = $path . '/good.gif';
+
+  $smileys['*DRINK*'] = $path . '/drinks.gif';
+  $smileys[':drink:'] = $path . '/drinks.gif';
+
+  $smileys['*IN_LOVE*'] = $path . '/man_in_love.gif';
+
+  $smileys['@='] = $path . '/bomb.gif';
+
+  $smileys['%)'] = $path . '/wacko.gif';
+  $smileys['%-)'] = $path . '/wacko.gif';
+  $smileys[':-$'] = $path . '/wacko.gif';
+  $smileys[':$'] = $path . '/wacko.gif';
+  $smileys[':wacko:'] = $path . '/wacko.gif';
+  $smileys[':WACKO:'] = $path . '/wacko.gif';
+
+  $smileys['*BRAVO*'] = $path . '/clapping.gif';
+  $smileys[':BRAVO:'] = $path . '/clapping.gif';
+  $smileys[':bravo:'] = $path . '/clapping.gif';
+  $smileys[':clapping:'] = $path . '/clapping.gif';
+
+  $smileys['*ROFL*'] = $path . '/ROFL.gif';
+  $smileys[':ROFL:'] = $path . '/ROFL.gif';
+  $smileys[':rofl:'] = $path . '/ROFL.gif';
+  $smileys[':-))))'] = $path . '/ROFL.gif';
+  $smileys[':-)))))'] = $path . '/ROFL.gif';
+  $smileys[':-))))))'] = $path . '/ROFL.gif';
+  $smileys[':))))'] = $path . '/ROFL.gif';
+  $smileys[':)))))'] = $path . '/ROFL.gif';
+  $smileys[':))))))'] = $path . '/ROFL.gif';
+  $smileys['=))))'] = $path . '/ROFL.gif';
+  $smileys['=)))))'] = $path . '/ROFL.gif';
+  $smileys['=))))))'] = $path . '/ROFL.gif';
+
+  $smileys['*PARDON*'] = $path . '/pardon.gif';
+  $smileys['=]'] = $path . '/pardon.gif';
+  $smileys[':PARDON:'] = $path . '/pardon.gif';
+  $smileys[':pardon:'] = $path . '/pardon.gif';
+
+  $smileys['*NO*'] = $path . '/nea.gif';
+  $smileys['*NO*'] = $path . '/nea.gif';
+
+  $smileys['*CRAZY*'] = $path . '/crazy.gif';
+  $smileys[':crazy:'] = $path . '/crazy.gif';
+
+  $smileys['*DONT_KNOW*'] = $path . '/unknw.gif';
+  $smileys['*UNKNOWN*'] = $path . '/unknw.gif';
+  $smileys[':HZ:'] = $path . '/unknw.gif';
+  $smileys[':hz:'] = $path . '/unknw.gif';
+
+  $smileys['*SORRY*'] = $path . '/sorry2.gif';
+  $smileys[':sorry:'] = $path . '/sorry2.gif';
+
+  $smileys['*YAHOO*'] = $path . '/yahoo.gif';
+  $smileys['*YAHOO!*'] = $path . '/yahoo.gif';
+  $smileys[':YAHOO:'] = $path . '/yahoo.gif';
+  $smileys[':yahoo:'] = $path . '/yahoo.gif';
+
+  $smileys['*DANCE*'] = $path . '/dance4.gif';
+  $smileys[':dance:'] = $path . '/dance4.gif';
+
+  $smileys['*HELP*'] = $path . '/help.gif';
+
+  $smileys['*OK*'] = $path . '/ok.gif';
+
+  $smileys['\\m/'] = $path . '/new_russian.gif';
+  $smileys['\\M/'] = $path . '/new_russian.gif';
+
+  $smileys['*HELLO*'] = $path . '/preved.gif';
+  $smileys['*PREVED*'] = $path . '/preved.gif';
+  $smileys['*PRIVET*'] = $path . '/preved.gif';
+  $smileys['*HI*'] = $path . '/preved.gif';
+
+  $smileys[';D'] = $path . '/acute.gif';
+  $smileys['*ACUTE*'] = $path . '/acute.gif';
+
+  $smileys['*BYE*'] = $path . '/bye.gif';
+
+  $smileys['*WRITE*'] = $path . '/mail1.gif';
+  $smileys['*MAIL*'] = $path . '/mail1.gif';
+
+  $smileys['*DASH*'] = $path . '/dash1.gif';
+  $smileys['*WALL*'] = $path . '/dash1.gif';
+
+  $smileys['*YES*'] = $path . '/yes3.gif';
+
+  $smileys['*SCRATCH*'] = $path . '/scratch_one-s_head.gif';
+
+  $smileys['*LOL*'] = $path . '/lol.gif';
+  $smileys[':-))'] = $path . '/lol.gif';
+  $smileys[':))'] = $path . '/lol.gif';
+  $smileys['=))'] = $path . '/lol.gif';
+  $smileys['+))'] = $path . '/lol.gif';
+  $smileys[':-)))'] = $path . '/lol.gif';
+  $smileys[':)))'] = $path . '/lol.gif';
+  $smileys[':lol:'] = $path . '/lol.gif';
+
+  $smileys['*HAPPY*'] = $path . '/i-m_so_happy.gif';
+  $smileys[':happy:'] = $path . '/i-m_so_happy.gif';
+  $smileys[':HAPPY:'] = $path . '/i-m_so_happy.gif';
+  $smileys[':Happy:'] = $path . '/i-m_so_happy.gif';
+  $smileys['^^'] = $path . '/i-m_so_happy.gif';
+
+  $smileys['*db*'] = $path . '/pleasantry.gif';
+  $smileys[':db:'] = $path . '/pleasantry.gif';
+
+  return $smileys;
+}

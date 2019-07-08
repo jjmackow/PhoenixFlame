@@ -1,0 +1,12 @@
+/**
+ * @file
+ * Default styles for smileys.
+ */
+span.smiley {
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: inline-block;
+  min-height: 20px;
+  min-width: 20px;
+  vertical-align: middle;
+}

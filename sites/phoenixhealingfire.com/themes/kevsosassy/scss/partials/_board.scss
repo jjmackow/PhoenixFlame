@@ -1,0 +1,48 @@
+.bod_teaser{
+  background: url($board_bg) green!important;
+  @include border-radius(10px);
+  margin-top: 30px;
+}
+#slick-views-board-of-directors-1-slider{
+  .slide__content{
+    background: rgba(0,0,0,.4);
+    padding: 5px;
+    
+    
+    .fullname{
+      
+      word-spacing: 9999999px;
+      color: orange;
+      text-shadow: whitew 1px 1px 2px;
+      font-size: 1.75rem;
+      width: 200px;
+    }
+    img{
+      @include box-shadow(black 2px 2px 5px);
+      @include border-radius(200px);
+    }
+  }
+}
+#block-views-board-of-directors-board-block{
+  .block-title{
+    display: inline-block;
+    padding: 3px 10px;
+    margin: 10px;
+    background: rgba(255, 255, 255, .7);
+    @include border-radius(20px);
+    @include box-shadow(black 2px 2px 5px);
+  }  
+}
+
+.field-type-office-hours.hours{
+  text-align: right;
+  color: white;
+  text-shadow: black 1px 1px 1px;
+  .field-label{
+    color: #e4e4e4;
+  }
+  >div{
+    display: inline-block;
+  }
+}
+

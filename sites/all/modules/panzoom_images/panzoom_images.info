@@ -1,0 +1,13 @@
+name = Panzoom Images
+description = Add a formatter to image fields to render using the Panzoom (https://github.com/timmywil/jquery.panzoom) jquery library.
+package = Fields
+core = 7.x
+dependencies[] = 'libraries'
+configure = admin/config/media/panzoom
+
+; Information added by Drupal.org packaging script on 2016-04-12
+version = "7.x-1.0-alpha1"
+core = "7.x"
+project = "panzoom_images"
+datestamp = "1460496445"
+

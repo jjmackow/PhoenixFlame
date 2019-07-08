@@ -1,0 +1,44 @@
+{
+  "name": "drupal/amazon_wysiwyg",
+  "description": "Server side Amazon widget.",
+  "keywords": ["amazon", "e-commerce"],
+  "type": "drupal-module",
+  "homepage": "https://www.drupal.org/project/amazon_wysiwyg",
+  "license": "GPL-2.0+",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "https://www.drupal.org/project/amazon_wysiwyg",
+    "source": "https://cgit.drupalcode.org/amazon_wysiwyg"
+  },
+  "authors": [
+    {
+      "name": "Marcelo Vani",
+      "email": "marcellovani@yahoo.co.uk",
+      "homepage": "https://about.me/marcelovani",
+      "role": "Maintainer"
+    }
+  ],
+  "repositories": {
+    "pdo": {
+      "type": "composer",
+      "url": "https://packages.drupal.org/7"
+    }
+  },
+  "config": {
+    "preferred-install": "source"
+  },
+  "require": {
+    "php": ">=5.3.0",
+    "drupal/wysiwyg": "^2.0",
+    "drupal/amazon": "2.x-dev",
+    "cweagans/composer-patches": "^1.5"
+  },
+  "extra": {
+    "enable-patching": true,
+    "patches": {
+      "drupal/amazon": {
+        "Support for locale database storage": "https://www.drupal.org/files/issues/locale_database_storage-2920070-4.patch"
+      }
+    }
+  }
+}

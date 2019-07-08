@@ -1,0 +1,164 @@
+
+
+// menu links should be as tall as the navbar is , with a little space for padding.
+//they should be orangish ... to match the block titles of the buzz, but be a little more redish/maroonish.menuparent
+// make drop-down arrow mor pronounced
+
+.sf-menu.sf-style-none {
+  float: left;
+  margin-bottom: .1em;
+  padding: 0;
+  
+  &.sf-navbar {
+    width: 100%;
+  }
+  
+  ul {
+    padding-left: 0;
+    
+  }
+}
+
+
+.sf-menu.sf-style-none a,
+.sf-menu.sf-style-none a:visited,
+.sf-menu.sf-style-none span.nolink {
+  
+  @include transition-property(border-bottom);
+  @include transition-duration(2s);
+  @include transition-timing-function(ease-in);  
+  font-size: 1.4em;
+  border-left: 1px solid transparent;  
+  color: $navbar-inverse-color;  
+  
+  padding: 0.5em .5em .05em;  
+  
+}
+.sf-menu.sf-style-none a.sf-with-ul,
+.sf-menu.sf-style-none span.nolink.sf-with-ul {
+  padding-right: 2.25em;
+}
+.sf-menu.sf-style-none.rtl a.sf-with-ul,
+.sf-menu.sf-style-none.rtl span.nolink.sf-with-ul {
+  padding-left: 2.25em;
+  padding-right: 1em;
+}
+.sf-menu.sf-style-none span.sf-description {
+  color: #13a;
+  display: block;
+  font-size: 0.833em;
+  line-height: 1.5;
+  margin: 5px 0 0 5px;
+  padding: 0;
+}
+.sf-menu.sf-style-none.rtl span.sf-description {
+  margin: 5px 5px 0 0;
+}
+.sf-menu.sf-style-none li,
+.sf-menu.sf-style-none.sf-navbar {
+  background: $navbar-inverse-bg;
+  
+  &.active-trail{
+    a{
+      color: $navbar-inverse-color-active;
+      text-shadow: $navbar-inverse-color-active-ts 1px 1px 1px, $navbar-inverse-color-active-ts -1px 1px 1px, $navbar-inverse-color-active-ts 1px -1px 1px;
+      &.active{
+        background: $navbar-inverse-bg-active;
+      }
+    }    
+  }
+}
+.sf-menu.sf-style-none li li {
+  background: $navbar-deep-inverse-bg;
+}
+.sf-menu.sf-style-none li li li {
+  background: $navbar-deep-inverse-bg;
+}
+.sf-menu.sf-style-none li:hover,
+.sf-menu.sf-style-none li.sfHover,
+.sf-menu.sf-style-none a:focus,
+.sf-menu.sf-style-none a:hover,
+.sf-menu.sf-style-none a:active,
+.sf-menu.sf-style-none span.nolink:hover {
+  background: $navbar-inverse-bg-active;  
+  color: $navbar-inverse-color-active;
+  outline: 0;
+  text-decoration: none;
+  border-bottom: .05em solid blue;
+  padding-bottom: 0px;
+}
+div.sf-accordion-toggle.sf-style-none a {
+  background: #bdd2ff;
+  border-left: 1px solid #fff;
+  border-top: 1px solid #cfdeff;
+  color: #13a;
+  padding: 1em;
+}
+div.sf-accordion-toggle.sf-style-none a.sf-expanded,
+.sf-menu.sf-style-none.sf-accordion li.sf-expanded {
+  background-color: #cfdeff;
+}
+div.sf-accordion-toggle.sf-style-none a.sf-expanded,
+.sf-menu.sf-style-none.sf-accordion li.sf-expanded > a,
+.sf-menu.sf-style-none.sf-accordion li.sf-expanded > span.nolink {
+  font-weight: bold;
+}
+.sf-menu.sf-style-none.sf-accordion li a.sf-accordion-button {
+  font-weight: bold;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 499;
+}
+.sf-menu.sf-style-none.sf-accordion li li a,
+.sf-menu.sf-style-none.sf-accordion li li span.nolink {
+  padding-left: 2em;
+}
+.sf-menu.sf-style-none.sf-accordion li li li a,
+.sf-menu.sf-style-none.sf-accordion li li li span.nolink {
+  padding-left: 3em;
+}
+.sf-menu.sf-style-none.sf-accordion li li li li a,
+.sf-menu.sf-style-none.sf-accordion li li li li span.nolink {
+  padding-left: 4em;
+}
+.sf-menu.sf-style-none.sf-accordion li li li li li a,
+.sf-menu.sf-style-none.sf-accordion li li li li li span.nolink {
+  padding-left: 5em;
+}
+.sf-menu.sf-style-none.rtl.sf-accordion li li a,
+.sf-menu.sf-style-none.rtl.sf-accordion li li span.nolink {
+  padding-left: auto;
+  padding-right: 2em;
+}
+.sf-menu.sf-style-none.rtl.sf-accordion li li li a,
+.sf-menu.sf-style-none.rtl.sf-accordion li li li span.nolink {
+  padding-left: auto;
+  padding-right: 3em;
+}
+.sf-menu.sf-style-none.rtl.sf-accordion li li li li a,
+.sf-menu.sf-style-none.rtl.sf-accordion li li li li span.nolink {
+  padding-left: auto;
+  padding-right: 4em;
+}
+.sf-menu.sf-style-none.rtl.sf-accordion li li li li li a,
+.sf-menu.sf-style-none.rtl.sf-accordion li li li li li span.nolink {
+  padding-left: auto;
+  padding-right: 5em;
+}
+.sf-menu.sf-style-none ul.sf-megamenu li.sf-megamenu-wrapper ol,
+.sf-menu.sf-style-none ul.sf-megamenu li.sf-megamenu-wrapper ol li {
+  margin: 0;
+  padding: 0;
+}
+.sf-menu.sf-style-none ul.sf-megamenu li.sf-megamenu-wrapper a.menuparent,
+.sf-menu.sf-style-none ul.sf-megamenu li.sf-megamenu-wrapper span.nolink.menuparent {
+  font-weight: bold;
+}
+.sf-menu.sf-style-none ul.sf-megamenu li.sf-megamenu-wrapper ol li.sf-megamenu-column {
+  display: inline;
+  float: left;
+}
+.sf-menu.sf-style-none.rtl ul.sf-megamenu li.sf-megamenu-wrapper ol li.sf-megamenu-column {
+  float: right;
+}

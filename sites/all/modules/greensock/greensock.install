@@ -1,0 +1,39 @@
+<?php
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the Greensock API.
+ */
+
+/**
+ * Implements hook_requirements().
+ */
+function greensock_requirements($phase) {
+  $requirements = array();
+
+  if ($phase == 'runtime') {
+    $library = libraries_detect('greensock');
+    $requirements['greensock'] = array(
+      'title' => $library['name'],
+    );
+    if ($library['installed']) {
+      $requirements['greensock']['value'] = $library['version'];
+      $requirements['greensock']['severity'] = REQUIREMENT_OK;
+    }
+    else {
+      $requirements['greensock']['value'] = $library['error'];
+      $requirements['greensock']['description'] = $library['error message'];
+      $requirements['greensock']['severity'] = REQUIREMENT_ERROR;
+    }
+  }
+
+  return $requirements;
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function greensock_uninstall() {
+  variable_del('greensock_js');
+  variable_del('greensock_js_core');
+}

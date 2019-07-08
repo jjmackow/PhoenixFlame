@@ -1,0 +1,12 @@
+name = Amazon Tests
+description = Helper module to run tests
+core = 7.x
+package = Amazon
+dependencies[] = amazon
+hidden = 1
+
+; Information added by Drupal.org packaging script on 2018-07-24
+version = "7.x-2.0"
+core = "7.x"
+project = "amazon"
+datestamp = "1532440085"

@@ -1,0 +1,9 @@
+name = Form save
+description = Allows users to save their forms using Ctrl+S or Cmd+S.
+core = 7.x
+; Information added by drupal.org packaging script on 2013-09-30
+version = "7.x-1.0+0-dev"
+core = "7.x"
+project = "form_save"
+datestamp = "1380580100"
+

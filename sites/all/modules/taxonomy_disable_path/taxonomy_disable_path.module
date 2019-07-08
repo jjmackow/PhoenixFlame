@@ -1,0 +1,124 @@
+<?php
+
+/**
+ * @file
+ * Allows administrators to disable taxonomy term paths on a per-term basis,
+ * and redirect the user to a 403 or 404 page.
+ */
+
+/**
+ * Implements hook_form_alter().
+ *
+ * Add configurable options per taxonomy term.
+ *
+ * @see taxonomy_disable_path_form_submit()
+ */
+function taxonomy_disable_path_form_alter(&$form, &$form_state, $form_id) {
+  $options = array(
+    '' => t('Do not disable the path'),
+    '403' => t('Display 403 page (access denied)'),
+    '404' => t('Display 404 page (page not found)'),
+    'front' => t('Display the front page'),
+  );
+
+  switch ($form_id) {
+    case 'taxonomy_form_vocabulary':
+      $vid = _taxonomy_disable_path_get_vid_from_name(arg(3));
+      if (!$vid) continue;
+
+      $form['taxonomy_disable_path'] = array(
+        '#title' => t('Disable path'),
+        '#description' => t('The action to take when a user visits this a taxonomy term listing page for a term within this vocabulary. This can be overriden per term.'),
+        '#type' => 'radios',
+        '#options' => $options,
+        '#default_value' => variable_get('taxonomy_disable_path_vid_' . $vid, ''),
+      );
+
+      // Add a custom submission handler.
+      $form['#submit'][] = 'taxonomy_disable_path_taxonomy_form_vocabulary_submit';
+      break;
+
+    case 'taxonomy_form_term':
+      // Add the form field.
+      $form['taxonomy_disable_path'] = array(
+        '#title' => t('Disable path'),
+        '#description' => t('The action to take when a user visits this a taxonomy term listing page for a term within this vocabulary. If an action is not set here, any action selected for the vocabulary will be used.'),
+        '#type' => 'radios',
+        '#options' => $options,
+        '#default_value' => variable_get('taxonomy_disable_path_tid_' . arg(2), ''),
+      );
+
+      // Add a custom submission handler.
+      $form['#submit'][] = 'taxonomy_disable_path_taxonomy_form_term_submit';
+      break;
+  }
+}
+
+/**
+ * Form submission handler for taxonomy_form_vocabulary().
+ */
+function taxonomy_disable_path_taxonomy_form_vocabulary_submit($form, &$form_state) {
+  $vid = $form_state['values']['vid'];
+  $value = $form_state['values']['taxonomy_disable_path'];
+  variable_set('taxonomy_disable_path_vid_' . $vid, $value);
+}
+
+/**
+ * Form submission handler for taxonomy_form_term().
+ */
+function taxonomy_disable_path_taxonomy_form_term_submit($form, &$form_state) {
+  $tid = $form_state['values']['tid'];
+  $value = $form_state['values']['taxonomy_disable_path'];
+  variable_set('taxonomy_disable_path_tid_' . $tid, $value);
+}
+
+/**
+ * Implements hook_init().
+ */
+function taxonomy_disable_path_init() {
+  if (arg(0) == 'taxonomy' && !arg(3)) {
+    $term_disabled = variable_get('taxonomy_disable_path_tid_' . arg(2), '');
+
+    if ($term_disabled) {
+      _taxonomy_disable_path_disabled($term_disabled);
+    }
+    else {
+      $term = taxonomy_term_load(arg(2));
+      $vid = $term->vid;
+      $vocabulary_disabled = variable_get('taxonomy_disable_path_vid_' . $vid, '');
+      _taxonomy_disable_path_disabled($vocabulary_disabled);
+    }
+  }
+}
+
+/**
+ * Get the vid for a vocabulary from its name.
+ *
+ * @param string $name
+ *   The vocabulary name.
+ *
+ * @return string
+ *   The vid.
+ */
+function _taxonomy_disable_path_get_vid_from_name($name) {
+  return db_query('SELECT vid FROM {taxonomy_vocabulary} WHERE machine_name = :name', array(
+    ':name' => $name,
+  ))->fetchField();
+}
+
+/**
+ * Perform an action for a disabled path.
+ *
+ * @param string $action
+ *   The action to take.
+ */
+function _taxonomy_disable_path_disabled($action) {
+  if ($action == 'front') {
+    drupal_goto('<front>');
+  }
+
+  if ($action == 403) drupal_access_denied();
+  if ($action == 404) drupal_not_found();
+
+  drupal_exit();
+}

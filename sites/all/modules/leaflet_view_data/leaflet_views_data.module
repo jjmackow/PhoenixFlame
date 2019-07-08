@@ -1,0 +1,46 @@
+<?php
+
+/**
+ * Implements hook_views_api().
+ */
+function leaflet_views_data_views_api() {
+  return array('api' => 3);
+}
+
+/**
+ * Render multiple Views layers on the map.
+ * @param  [type] $layers array of view_name => display_name pairs
+ */
+function leaflet_views_data_render_map_layers($map, $layers, $height = '400px') {
+  $groups = array();
+
+  $empty = TRUE;
+  foreach ($layers as $view_name => $view_displays) {
+    if ($view = views_get_view($view_name)) {
+      foreach ($view_displays as $view_display) {
+        // @todo pass on the arguments.. maybe we can use a master view here as well, similar to OL?
+        $view->set_display($view_display);
+        $features = $view->execute_display($view_display);
+        $title = $view->get_title();
+
+        if (!empty($features)) {
+          $empty = FALSE;
+        }
+
+        $groups[] = array(
+          'group' => TRUE,
+          'label' => $title,
+          'features' => $features,
+        );
+
+        $view->destroy();
+      }
+    }
+  }
+
+  if (!$empty) {
+    return leaflet_render_map($map, $groups, $height);
+  } else {
+    return FALSE;
+  }
+}

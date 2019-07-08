@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for show email module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function show_email_uninstall() {
+  variable_del('show_email_enabled');
+  variable_del('show_email_weight');
+  variable_del('show_email_label_display');
+
+}

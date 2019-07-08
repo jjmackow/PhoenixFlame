@@ -1,0 +1,8 @@
+7.x-1.x
+-------------------------------
+- #1823044 by slashrsm | dtsio: Added debug info.
+- by slashrsm: Fix jQuery namespace conflicts also for debug and xray modes.
+- by slashrsm: Fix jQuery namespace conflicts in LazyLoad script.
+- by slashrsm: Support 'forceLoad' setting. This will load all ads on load,
+               instead of waiting ad to become visible on page.
+- by slashrsm: Initial commit.

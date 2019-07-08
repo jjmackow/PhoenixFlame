@@ -1,0 +1,58 @@
+.slide__content .views-field-field-360picture{  
+  a,
+  a:hover,
+  a:focus{
+    font-size: .5rem;  
+  }
+}
+body.node-type-property-profile {
+  margin-top: 0px!important;  
+  color: white;
+  text-shadow: black 1px 1px 1px, gray -1px 1px 2px;
+  .region-content{
+    padding: 5px;    
+    margin-bottom: 20px;
+  }
+}
+.oh-display-label{
+  color: yellow;
+  text-shadow: gray 1px 1px 1px;  
+}
+.oh-display-times{
+  color: yellow;
+  text-shadow: gray 1px 1px 1px;  
+}
+
+/*the gallary page also*/
+
+.bef-select-as-links{
+    .form-item{
+      text-align: center;
+      display: inline-block;
+      margin: 2px 5px;
+      a{
+        background: gray;
+        color: white;
+        display: block;
+        @include transition-duration(.84s);
+        border: 1px 1px $btn-default-border;
+        @include border-radius(4px);
+        &.active{
+          color: yellow;
+          background: blue;
+        }
+        &:hover,
+      &:focus{
+        text-decoration: none;
+        color: yellow;
+        background: blue;
+      }
+    }
+  }
+
+}
+
+
+
+
+    

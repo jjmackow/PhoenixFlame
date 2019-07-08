@@ -1,0 +1,86 @@
+$ncos_icon_set = "./../../images/contact_iconset.png";
+$ncos_icon_offset = 32px;
+
+.ncos_contact_table{
+  float: right;
+  clear: left;
+  z-index: $absolutetop;
+  width: 200px;
+  margin: auto;  
+  font-size: 12px;
+  background: $SLATE;
+  @include border-radius(16px);
+  color: $SAMPLAEBLUE;
+  text-shadow: none;
+  text-align: center;
+  a{
+    text-decoration: none;
+    &:focus,
+    &:hover{
+      text-decoration: none!important;
+    }
+    &:not(.btn) {
+      text-decoration: none!important;
+    }
+  }
+  tbody,
+  thead{
+    margin: 0px;
+    padding: 0px;
+    tr{
+      display: block;
+    }
+  }
+  thead{
+    tr{
+
+    }
+  }
+  tbody{
+    tr{
+
+    }
+  }
+  td, th{
+    text-align: center;
+    width: 150px;
+    margin: 0px;
+    padding: 5px;    
+  }
+
+  .inner{
+    display: inline-block;
+    height: $ncos_icon_offset;
+    width:  $ncos_icon_offset;  
+    @include transition-duration(.420s);
+    color: yellow;
+    text-decoration: none;  
+  }
+  .ncos_gmap,
+  .ncos_phone{
+    padding: 10px;
+    width: 52px;
+    height: 52px;
+    display: block;
+    text-align: center;
+    @include border-radius(26px);
+    background: white;
+  }
+  .ncos_phone .inner{
+    background: url($ncos_icon_set) no-repeat 0px 0px;
+    &:hover,
+    &:focus{
+      background: url($ncos_icon_set) no-repeat 0px -32px;  
+    }
+  }
+  .ncos_gmap .inner{
+    background: url($ncos_icon_set) no-repeat -32px 0px;
+    &:hover,
+    &:focus{
+      background: url($ncos_icon_set) no-repeat -32px -32px;
+    }
+  }
+  .nonbreaking{
+    white-space: nowrap;
+  }
+}

@@ -1,0 +1,99 @@
+<?php
+
+/**
+ * @file
+ * Functions to be run when the CiviCRM Taxonomy Groups module is
+ * installed.
+ */
+
+/**
+ * Implements hook_schema().
+ *
+ * Define the current version of the database schema.
+ */
+function civicrm_taxonomy_schema() {
+  $schema = array();
+
+  $schema['civicrm_taxonomy_groups'] = array(
+    'description' => 'Stores taxonomy term and vocabulary IDs and their corresponding group IDs.',
+    'fields' => array(
+      'gid' => array(
+        'description' => 'The CiviCRM group ID',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'vid' => array(
+        'description' => 'The taxonomy vocabulary ID',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'tid' => array(
+        'description' => 'The taxonomy term ID',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('gid'),
+  );
+  $schema['civicrm_taxonomy_option_values'] = array(
+    'description' => 'TODO: please describe this table!',
+    'fields' => array(
+      'tid' => array(
+        'description' => 'The taxonomy term ID',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'vid' => array(
+        'description' => 'The taxonomy vocabulary ID',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'ovid' => array(
+        'description' => 'The CiviCRM option value ID',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('tid'),
+    'indexes' => array(
+      'ovid' => array('ovid'),
+    ),
+  );
+  $schema['civicrm_taxonomy_option_groups'] = array(
+    'description' => 'TODO: please describe this table!',
+    'fields' => array(
+      'vid' => array(
+        'description' => 'TODO: please describe this field!',
+        'type' => 'varchar',
+        'length' => '5',
+        'not null' => TRUE,
+      ),
+      'ogid' => array(
+        'description' => 'TODO: please describe this field!',
+        'type' => 'varchar',
+        'length' => '5',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('vid'),
+    'indexes' => array(
+      'ogid' => array('ogid'),
+    ),
+  );
+
+  return $schema;
+}
+
+/**
+ * Implements hook_install().
+ */
+function civicrm_taxonomy_install() {
+  variable_set('civicrm_taxonomy_settings', array());
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function civicrm_taxonomy_uninstall() {
+  variable_del('civicrm_taxonomy_settings');
+}

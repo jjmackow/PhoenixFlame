@@ -1,0 +1,11 @@
+name = Statcounter
+description = "Inserts the Statcounter javascript tracking code into drupal's pages."
+core = 7.x
+package = Statistics
+configure = admin/config/system/statcounter
+; Information added by drupal.org packaging script on 2013-10-01
+version = "7.x-2.0-rc1+0-dev"
+core = "7.x"
+project = "statcounter"
+datestamp = "1380637856"
+

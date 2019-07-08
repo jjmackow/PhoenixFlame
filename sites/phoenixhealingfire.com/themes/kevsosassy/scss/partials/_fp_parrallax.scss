@@ -1,0 +1,13 @@
+
+.forkit{
+  @include transition-duration(.420s);
+  opacity: 0.5;
+  top: -200px;
+  right: 200px;
+  &.rollup{
+    opacity: 1;
+    top: 0px;
+    right: 0px;
+    transform: translate(200px, 200px);
+  }
+}

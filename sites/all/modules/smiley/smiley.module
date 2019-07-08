@@ -1,0 +1,192 @@
+<?php
+/**
+ * @file
+ * A framework for replacing text smileys with images.
+ */
+
+/* Hook implementations. */
+
+/**
+ * Implements hook_filter_info().
+ */
+function smiley_filter_info() {
+  $filters = array();
+
+  $filters['smiley'] = array(
+    'title' => t('Convert smileys to images'),
+    'description' => t('Replaces text smileys with image equivalents.'),
+    'process callback' => '_smiley_filter_smiley_process',
+    'weight' => 5,
+
+    'settings callback' => '_smiley_filter_smiley_settings',
+    'default settings' => array(
+      'method' => 'smiley_span_smiley',
+    ),
+  );
+
+  return $filters;
+}
+
+/**
+ * Implements hook_modules_enabled().
+ */
+function smiley_modules_enabled($modules) {
+  // Rebuild the smiley cache.
+  _smiley_get_smileys(TRUE);
+}
+
+/**
+ * Implements hook_modules_disabled().
+ */
+function smiley_modules_disabled($modules) {
+  // Rebuild the smiley cache.
+  _smiley_get_smileys(TRUE);
+}
+
+/**
+ * Implements hook_flush_caches().
+ */
+function smiley_flush_caches() {
+  // Rebuild the smiley cache.
+  _smiley_get_smileys(TRUE);
+
+  // We don't have any cache tables.
+  return array();
+}
+
+/**
+ * Implements hook_theme().
+ */
+function smiley_theme($existing, $type, $theme, $path) {
+  $theme_hooks = array();
+
+  // Replace a smiley with an image.
+  $theme_hooks['smiley_image_smiley'] = array(
+    'variables' => array(
+      'image_path' => '',
+      'replaced_text' => '',
+      'classes_array' => array(),
+    ),
+    'template' => 'smiley_image_smiley',
+  );
+
+  // Replace a smiley with a span + background image.
+  $theme_hooks['smiley_span_smiley'] = array(
+    'variables' => array(
+      'image_path' => '',
+      'replaced_text' => '',
+      'classes_array' => array(),
+    ),
+    'template' => 'smiley_span_smiley',
+  );
+
+  return $theme_hooks;
+}
+
+/* Theme functions. */
+
+/**
+ * Prepares variables for image smiley templates.
+ *
+ * Default template: smiley_image_smiley.tpl.php.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - image_path: The path to the smiley image.
+ *   - classes_array: An array of classes to add to the smiley.
+ *   - replaced_text: The text that was replaced with this smiley.
+ */
+function template_preprocess_smiley_image_smiley(&$variables) {
+  // Add some default classes.
+  $variables['classes_array'][] = 'smiley';
+  $variables['classes_array'][] = 'image_smiley';
+}
+
+/**
+ * Prepares variables for span smiley templates.
+ *
+ * Default template: smiley_span_smiley.tpl.php.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - image_path: The path to the smiley image.
+ *   - classes_array: An array of classes to add to the smiley.
+ *   - replaced_text: The text that was replaced with this smiley.
+ */
+function template_preprocess_smiley_span_smiley(&$variables) {
+  // Add some default classes.
+  $variables['classes_array'][] = 'smiley';
+  $variables['classes_array'][] = 'image_smiley';
+
+  // Include the default styles.
+  drupal_add_css(drupal_get_path('module', 'smiley') . '/smiley_span_smiley.css');
+}
+
+/* Helper functions. */
+
+/**
+ * Implements hook_filter_FILTER_process().
+ */
+function _smiley_filter_smiley_process($text, $filter, $format, $langcode, $cache, $cache_id) {
+  $smileys = _smiley_get_smileys();
+
+  // Loop through each smiley, running preg_replace_callback on the whole
+  // page text.
+  // This way of doing things is a bit convoluted because we want to be as
+  // performant as possible. Basically, the callback function only gets called
+  // if a match is found. Because the callback function is the one that contains
+  // the theme function, the theme function is not called unnecessarily.
+  foreach ($smileys as $to_replace => $image_path) {
+    $pattern = "|" . preg_quote($to_replace) . "|";
+
+    $text = preg_replace_callback($pattern, function ($matches) use ($image_path, $filter) {
+      $answer = theme($filter->settings['method'], array(
+        'image_path' => $image_path,
+        'replaced_text' => $matches[0],
+      ));
+
+      return (string) $answer;
+    }, $text);
+  }
+
+  return $text;
+}
+
+/**
+ * Implements hook_filter_FILTER_settings().
+ */
+function _smiley_filter_smiley_settings($form, &$form_state, $filter, $format, $defaults, $filters) {
+  $filter->settings += $defaults;
+
+  $settings['method'] = array(
+    '#type' => 'radios',
+    '#title' => t('Smiley replacement method'),
+    '#options' => array(
+      'smiley_span_smiley' => t("Place a &lt;span&gt; tag and set it's background image. — The images will scale to the size of the text but this method is not compatible with Internet Explorer 8 and below or Opera 9 and below."),
+      'smiley_image_smiley' => t('Embed an image in the text. — The images have to be the same size as the text but this will work in all browsers.'),
+    ),
+    '#default_value' => $filter->settings['method'],
+  );
+
+  return $settings;
+}
+
+/**
+ * Helper function to get a list of smileys from other modules.
+ *
+ * @param bool $reset
+ *   Reset the smiley static cache.
+ *
+ * @return array
+ *   An array where the keys are the text to replace and the values are the path
+ *   to the image that will replace it.
+ */
+function _smiley_get_smileys($reset = FALSE) {
+  $smileys = &drupal_static(__FUNCTION__);
+  if (!isset($smileys) || $reset) {
+    $smileys = module_invoke_all('smiley_replacements');
+  }
+
+  // See module_implements() for an explanation of this cast.
+  return (array) $smileys;
+}

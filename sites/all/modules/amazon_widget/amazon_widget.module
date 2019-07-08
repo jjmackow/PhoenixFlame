@@ -1,0 +1,115 @@
+<?php
+/**
+ * @file
+ * Client side widget for amazon.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function amazon_widget_menu() {
+  $items = array();
+  $items['admin/config/services/amazon/widget'] = array(
+    'title' => 'Widget',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('amazon_widget_settings_form'),
+    'file' => 'amazon_widget.admin.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('administer amazon'),
+    'type' => MENU_LOCAL_TASK
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_admin_paths().
+ */
+function amazon_widget_admin_paths() {
+  return array('system/ajax/amazon_wysiwyg' => TRUE);
+}
+
+/**
+ * Implements hook_preprocess_amazon_item().
+ */
+function amazon_widget_preprocess_amazon_item(&$variables, $theme_type) {
+  if (path_is_admin(current_path())) {
+    return;
+  }
+
+}
+
+/**
+ * Implements hook_page_alter().
+ */
+function amazon_widget_page_alter(&$page) {
+  if (path_is_admin(current_path())) {
+    return;
+  }
+
+  $url = check_url(_amazon_widget_variable_get('amazon_widget_geoip_url'));
+  $data_type = check_plain(_amazon_widget_variable_get('amazon_widget_geoip_data_type'));
+  $country_code_key = check_plain(_amazon_widget_variable_get('amazon_widget_geoip_country_code_key'));
+  $default_locale = check_plain(_amazon_widget_variable_get('amazon_default_locale'));
+  $classes = _amazon_widget_variable_get('amazon_widget_css_classes');
+
+  $amazon_data = amazon_data_cache();
+  $locales = $amazon_data['locales'];
+
+  // Add widget settings.
+  drupal_add_js(array(
+    'amazon_widget' => array(
+      'geoip_url' => trim($url, '/') . '/',
+      'data_type' => $data_type,
+      'country_code_key' => $country_code_key,
+      'locales' => array_keys($locales),
+      'default_locale' => $default_locale,
+      'classes' => $classes,
+    ),
+  ), 'setting');
+
+  // Add widget controller.
+  $path = drupal_get_path('module', 'amazon_widget') . '/amazon_widget.js';
+  $options = array(
+    'weight' => 1000,
+    'every_page' => TRUE,
+    'preprocess' => FALSE,
+    'requires_jquery' => TRUE,
+  );
+  drupal_add_js($path, $options);
+}
+
+/**
+ * Wrapper to return variables or default values.
+ *
+ * @param $name
+ */
+function _amazon_widget_variable_get($name) {
+
+  switch ($name) {
+    case 'amazon_widget_geoip_url':
+      $default = 'http://freegeoip.net/json';
+      break;
+
+    case 'amazon_widget_geoip_data_type':
+      $default = 'json';
+      break;
+
+    case 'amazon_widget_geoip_country_code_key':
+      $default = 'country_code';
+      break;
+
+    case 'amazon_widget_css_classes':
+      $default = array(
+        '.amazon-item',
+        '.field-type-asin',
+      );
+      break;
+
+    case 'amazon_default_locale':
+      $default = 'US';
+      break;
+  }
+
+  return variable_get($name, $default);
+}

@@ -1,0 +1,5 @@
+name = ScrollMagic
+description = Provides ScrollMagic JS libraries
+core = 7.x
+dependencies[] = libraries (>=2.3)
+dependencies[] = greensock

@@ -1,0 +1,38 @@
+<?php
+
+/**
+* @file
+* skrollr.install
+*
+* Removes variables used by Skrollr Module upon module uninstall 
+* 
+*/
+
+/**
+ * Implements hook_uninstall().
+ */
+function skrollr_uninstall() {
+
+ variable_del('enable_skrollr');
+ variable_del('skrollr_filename');
+ variable_del('enable_skrollr_stylesheets');
+ variable_del('skrollr_stylesheets_filename');
+ variable_del('enable_skrollr_menu');
+ variable_del('skrollr_menu_filename');
+ variable_del('enable_skrollr_ie');
+ variable_del('skrollr_ie_filename');
+
+ variable_del('skrollr_smooth_scrolling');
+ variable_del('skrollr_smooth_scrolling_duration');
+ variable_del('skrollr_scale');
+ variable_del('skrollr_constants');
+ variable_del('skrollr_force_height');
+ variable_del('skrollr_mobile_deceleration');
+ variable_del('skrollr_edge_strategy');
+ variable_del('skrollr_edge_strategy_ease_function');
+ variable_del('skrollr_easing');
+ variable_del('skrollr_render');
+ variable_del('skrollr_before_render');
+ variable_del('skrollr_mobile_check');
+
+}

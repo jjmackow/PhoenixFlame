@@ -1,0 +1,1 @@
+drush en -y rss_xsl

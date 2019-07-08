@@ -1,0 +1,38 @@
+article {
+	display: inline-block;
+	margin: 20px;
+	width: 480px;
+}
+
+del {
+	opacity: 0.3;
+}
+
+.sharing {
+	position: absolute;
+	bottom: 16px;
+	left: 20px;
+}
+.forkit{
+	z-index: 9999;
+}
+.forkit-curtain {
+	text-align: center;
+	background: rgba( 0, 0, 0, 0.8 );
+	padding-top: 10%;
+}
+.forkit-curtain  .close-button {
+	z-index: 9017;
+	position: absolute;
+	width: 32px;
+	height: 32px;
+	left: -20px;
+	top: 20px;
+	cursor: pointer;
+
+	background: red;
+	content: "X";
+	color: white;
+	text-align:center;
+}
+	

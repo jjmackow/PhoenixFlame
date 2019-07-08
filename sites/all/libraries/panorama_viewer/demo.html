@@ -1,0 +1,41 @@
+<html>
+<head>
+
+<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+</head>
+<body>
+
+
+
+<script type="text/javascript" src="/sites/all/libraries/panorama_viewer/jquery.panorama_viewer.js"></script>
+<link href='/sites/all/libraries/panorama_viewer/panorama_viewer.css' rel='stylesheet' type='text/css'>
+<script>
+jQuery(window).ready(function(){
+	jQuery(".field-name-field-image360 .field-items .field-item").panorama_viewer({
+		repeat: true
+	});
+});		
+</script>
+
+
+
+	<div class="field-name-field-image360" style="width: 350px;height: 200px">
+		<div class='field-items'>
+			<figure class='field-item'>
+				<img src="caveroompanorama.jpg">
+			</figure>
+		</div>
+	</div>
+	<div class="field-name-field-image360" style="width: 350px;height: 200px">
+		<div class='field-items'>
+			<figure class='field-item'>
+			<img src="club360-high.jpg">
+		</figure>
+		</div>
+	</div>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,12 @@
+<?php
+
+/**
+ * Implements hook_install().
+ */
+function trim_install() {
+  // Set a large weight in order to go last (and so validate first).
+  db_update('system')
+    ->fields(array('weight' => 1001))
+    ->condition('name', 'trim', '=')
+    ->execute();
+}

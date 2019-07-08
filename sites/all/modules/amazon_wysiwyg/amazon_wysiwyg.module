@@ -1,0 +1,216 @@
+<?php
+/**
+ * @file
+ * Wywisyg plugins for amazon widget.
+ */
+
+/**
+ * Implements hook_wysiwyg_include_directory().
+ */
+function amazon_wysiwyg_wysiwyg_include_directory($type) {
+  switch ($type) {
+    case 'plugins':
+      return $type;
+  }
+}
+
+/**
+ * Implements hook_filter_info().
+ */
+function amazon_wysiwyg_filter_info() {
+  return array(
+    'amazon_wysiwyg' => array(
+      'title' => t('Amazon Widget'),
+      'process callback' => 'amazon_wysiwyg_embed_filter',
+      'weight' => 50,
+    ),
+  );
+}
+
+/**
+ * Callback for hook_filter_info().
+ */
+function amazon_wysiwyg_embed_filter($text, $filter, $format, $langcode, $cache, $cache_id) {
+  return preg_replace_callback(
+    '|<!--amazon-widget(.*?)-->|si',
+    function ($matches) {
+      if (isset($matches[1])) {
+        $data = json_decode($matches[1]);
+
+        $style = 'default';
+        if (isset($data->style)) {
+          $style = $data->style;
+        }
+
+        $locale = variable_get('amazon_default_locale', 'US');
+        if (isset($data->locale)) {
+          $locale = $data->locale;
+        }
+
+        $result = amazon_wysiwyg_fetch($data->asin, $locale);
+        if (!empty($result['item'])) {
+          $markup = theme('amazon_item', array(
+            'item' => $result['item'],
+            'style' => $style,
+            'locale' => $locale)
+          );
+          // Convert line breaks into spaces to avoid wysiwyg transforming
+          // line breaks into <br/>.
+          return preg_replace("/\n+/", " ", $markup);
+        }
+      }
+    },
+    $text
+  );
+}
+
+/**
+ * Implements hook_page_alter().
+ */
+function amazon_wysiwyg_page_alter(&$page) {
+  drupal_add_css(drupal_get_path('module', 'amazon_wysiwyg') . '/amazon_wysiwyg.css');
+}
+
+/**
+ * Implements hook_menu().
+ */
+function amazon_wysiwyg_menu() {
+  $items['system/ajax/amazon_wysiwyg'] = array(
+    'page callback' => 'amazon_wysiwyg_widget_callback',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+/**
+ * Page callback for amazon_wysiwyg.
+ */
+function amazon_wysiwyg_widget_callback() {
+  $output = '';
+  drupal_add_http_header('Content-Type', 'text/html; charset=utf-8');
+  $param = drupal_get_query_parameters();
+
+  if (!isset($param['asin']) || $param['asin'] == 'undefined') {
+    print t('ASIN is required.');
+  }
+  $asin = check_plain($param['asin']);
+
+  if (!isset($param['style']) || $param['style'] == 'undefined') {
+    $param['style'] = 'large_wide';
+  }
+  $style = check_plain($param['style']);
+
+  if (isset($param['locale'])) {
+    $locale = check_plain($param['locale']);
+  }
+  else {
+    $locale = check_plain(variable_get('amazon_default_locale', 'US'));
+  }
+
+  $result = amazon_wysiwyg_fetch($asin, $locale);
+  if (!empty($result['item'])) {
+    $output = theme('amazon_item', array('item' => $result['item'], 'style' => $style, 'locale' => $locale));
+  }
+  elseif (!empty($result['errors'])) {
+    $output = implode('<br />', $result['errors']);
+  }
+  print $output;
+
+  drupal_exit();
+}
+
+
+/**
+ * Helper to retrieve and store the item.
+ *
+ * @param $asin
+ *    The asin code
+ * @param $locale
+ *    The locale of the item (country code)
+ *
+ * @return array $result An array containing the item and/or errors
+ */
+function amazon_wysiwyg_fetch($asin, $locale) {
+  $asin = amazon_convert_to_asin($asin);
+  $item = amazon_item_lookup_from_db(array($asin), drupal_strtoupper($locale));
+  if (!empty($item)) {
+    $item = reset($item);
+    return array('item' => $item);
+  }
+
+  // Fetch from API.
+  $result = array();
+  $items = amazon_item_lookup_from_web(array($asin), drupal_strtoupper($locale));
+  if (!empty($items) && is_array($items)) {
+    $result['item'] = reset($items);
+  }
+  else {
+    $result['errors'][] = t('Not found. Check logs for errors.');
+  }
+
+  return $result;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function amazon_wysiwyg_theme() {
+  $templates = array(
+    'amazon_item__buy_now_wide' => array(
+      'variables' => array('item' => array()),
+      'template' => 'amazon-item--buy-now-wide',
+      'preprocess functions' => array(
+        'template_preprocess_amazon_item',
+      ),
+      'path' => drupal_get_path('module', 'amazon_wysiwyg') . '/templates',
+    ),
+    'amazon_item__buy_now_medium' => array(
+      'variables' => array('item' => array()),
+      'template' => 'amazon-item--buy-now-medium',
+      'preprocess functions' => array(
+        'template_preprocess_amazon_item',
+      ),
+      'path' => drupal_get_path('module', 'amazon_wysiwyg') . '/templates',
+    ),
+  );
+
+  return $templates;
+}
+
+/**
+ * Implements hook_preprocess().
+ */
+function amazon_wysiwyg_preprocess_amazon_item(&$variables) {
+  if (!isset($variables['style'])) {
+    return;
+  }
+
+  switch ($variables['style']) {
+    case 'buy_now_wide':
+    case 'buy_now_medium':
+      $path = drupal_get_path('module', 'amazon_wysiwyg');
+      $variables['logo_src'] = $path . '/plugins/amazon_wysiwyg/images/amazon_logo.svg';
+      $variables['link'] = $variables['detailpageurl'];
+
+      // Price fallback order. If one price is not available, try the next.
+      $price_fallback_order = array(
+        'lowestpriceformattedprice',
+        'amazonpriceformattedprice',
+        'listpriceformattedprice',
+      );
+      // Allow other modules to change the price fallback order.
+      drupal_alter('amazon_wysiwyg_price_fallback_order', $price_fallback_order);
+
+      $variables['price'] = NULL;
+      foreach ($price_fallback_order as $key => $field) {
+        if (!empty($variables[$field])) {
+          $variables['price'] = $variables[$field];
+          break;
+        }
+      }
+
+      break;
+  }
+}

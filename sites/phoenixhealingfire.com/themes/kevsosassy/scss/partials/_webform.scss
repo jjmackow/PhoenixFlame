@@ -1,0 +1,338 @@
+/**
+ * @file
+ * Front-end styling for the display of webforms.
+ */
+input.webform-calendar {
+  display: none;
+  padding: 3px;
+  vertical-align: top;
+}
+html.js input.webform-calendar {
+  display: inline;
+}
+.webform-container-inline label {
+  display: inline;
+  margin-right: 1em;
+}
+.webform-container-inline div,
+.webform-container-inline div.form-item {
+  display: inline;
+}
+.webform-container-inline div.description {
+  display: block;
+}
+.webform-container-inline div.messages {
+  display: block;
+  float: left;
+}
+.webform-container-inline div.ajax-progress-bar div {
+  display: inherit;
+}
+.webform-container-inline.webform-component-textarea label {
+  vertical-align: top;
+}
+.webform-container-inline.webform-component-textarea .form-textarea-wrapper {
+  display: inline-block;
+}
+.webform-component-textarea .grippie {
+  display: block;
+}
+.webform-progressbar {
+  width: 90%;
+  margin: 0 auto;
+  text-align: center;
+}
+.webform-progressbar-inner {
+  height: 1em;
+  background-color: #74c421;
+  height: 3px;
+}
+.webform-progressbar-outer {
+  position: relative;
+  border: 1px solid #356900;
+  width: 100%;
+  height: 3px;
+  margin: 0.35em -1px 2em;
+  background-color: white;
+}
+.webform-progressbar-page {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  margin: -6px -4px;
+  border: 1px solid #356900;
+  background-color: white;
+  border-radius: 5px;
+}
+.webform-progressbar-page.completed {
+  background-color: #74c421;
+}
+.webform-progressbar-page.current {
+  background-color: #74c421;
+}
+.webform-progressbar-page .webform-progressbar-page-number {
+  display: none;
+}
+.webform-progressbar-page .webform-progressbar-page-label {
+  position: relative;
+  top: 10px;
+  margin: 0 -10em;
+}
+
+/*10/25/17 fix layout for the names fields*/
+
+/** end user registration form **/
+
+form.webform-client-form{
+  color: white;
+  padding-top: 1em;
+  background: rgba( 0, 0, 0, 0.8 );	
+  .captcha{
+    display: inline-block;    
+     height: 7em;
+
+    position: relative;
+    text-align: center;
+    .g-recaptcha{      
+      display: inline-block;      
+    }
+  }
+  
+  label,
+  .title-select{
+    color: $form_label_color;
+    
+  }
+  h2{
+    font-size: 3em;
+    text-align: center;
+    margin-top: 1em;
+    em{
+      font-size: inherit;
+      font-weight: normal;
+    }
+  }
+  .form-group{
+    >label{
+      color: white;
+    }    
+  }
+  .close-button{
+    transition: all ease-in .420s;
+    &:focus,
+    &:hover{
+      color: #ff00ff;
+      text-shadow: $form_label_color 2px 2px 1px, white 2px 2px 13px;
+    }
+  }
+  margin-left: 10px;
+  margin-top: 0px;
+  top: 1.75em;    
+  color: $glyphicon-color;
+  text-shadow: white 1px 1px 3px;
+  .form-control {
+    background: none;
+    color: white;
+    font-size: 20px;
+    font-weight: 400;
+    &:active,
+    &:focus{
+      background: black;
+      color: white;
+    }
+  }
+  .webform-component-phone{
+    label.control-label{
+      display: inline-block;
+      margin-bottom: .25em;
+    }
+  }
+  .webform-component-phone{
+    label{
+      margin-top: .5em;
+    }
+    input{
+      padding-left: 3em;
+    }
+    &:before{
+      margin: 1.25em auto auto .25em;
+    }
+  }
+  .webform-component-textarea{
+    margin-top: .5em;
+    .form-textarea{
+      padding-left: 2em;
+      height: 7em;
+    }
+  }
+  *{
+    text-shadow: none;
+    font-style: normal;
+    font-weight: bold;  
+  }
+  .form-inline .form-control{
+    width: 100%;
+  }
+  .webform-left{
+    display: inline-block!important;
+    clear: none;
+    float: left;
+    text-align: left;    
+  }
+  $glyphicon-top = .75em;
+  $glyphicon-left = 2.25em;
+  .glyphicon.form-item{
+    >label.compact-form-label{
+      top: $glyphicon-top;
+      left: $glyphicon-left;
+    }
+    >input.form-control.compact-form-field{
+      padding-left: $glyphicon-left;
+    }
+    &:before{
+      display: inline-block;
+      position: absolute;
+      top: $glyphicon-top;
+      left: .25em;
+    }    
+    &.webform-component-checkboxes{
+      margin-top: .6em;
+      margin-left: 0em;
+      padding: 1em;
+      .form-checkboxes {
+        border: 1px solid white;
+        @include border-radius(.5em, .5em);
+        background: black;
+      }
+      .form-item.checkbox{
+        @extend .well;
+        background: transparent;
+        width: 45%;
+        display: inline-block;
+        margin: .25em 2.5%;        
+        text-align: left;
+        .form-checkbox{
+          padding: .5em inherit;
+          margin: inherit 2em;     
+        }
+        label.control-label{
+          display: block;
+          width: auto;
+          padding: .25em .5em;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;          
+        }
+      }      
+    }
+    &.webform-component-name,
+    &.webform-component-checkboxes{
+      margin-bottom: .5em;
+      &:before{
+        position: relative;
+        top: auto;
+      }
+      >.clearfix{
+        >div{
+          width: 50%;
+          margin: 0px!important;
+          .form-item{                        
+            
+            label{
+              margin: .8em;              
+            }
+          }                  
+          &:nth-of-type(odd){
+            float: left;
+            clear: left;
+            margin-right: 5px;
+          }
+          &:nth-of-type(even){
+            float: right!important;
+            clear: right;
+            margin-left: 5px;
+          }
+        }
+      }
+    }
+  }
+  .webform-right{
+    display: inline-block!important;
+    clear: both;
+    float: right;
+    text-align: right;    
+  }
+}
+
+
+
+
+.webform-component-name{
+  margin: 0px 0px 30px 0px !important;
+  width: 100%;  
+  >div{
+    line-height: normal;
+    width: 100%;
+    display: block;
+  }
+  >.control-label{
+    display: none;
+  }
+
+  >div{
+    width: 100%;
+  }
+  .name-given-wrapper,
+  .name-family-wrapper{
+    display: block;    
+    clear: none;
+    width: 50%;
+    margin: 0px!important;
+    input{
+      position: absolute;
+    }
+    .control-label{
+      display: block!important;
+      right: 2.25em;
+    }
+    .help-block{
+      margin: 3em auto auto 2em;
+      color: white;
+      font-family: 'Open Sans';
+      font-size: 1.9rem;
+      font-weight: 100;
+    }
+  }
+  .name-given-wrapper{
+    input{
+      width: 90%;
+      float: left;
+    }
+  }
+  .name-family-wrapper{
+    input{
+      width: 100%;      
+    }    
+  }
+}
+.webform-layout-box.webform-component--right{
+  padding-top: 2.3em;
+}
+.webform-component-select-or-other.webform-component--services{
+  width: auto;
+  display: inline-block;
+  margin: 0px 15px 15px 15px;
+  border : 1px solid white;
+  label{
+    line-height: 1.25em!important;
+    padding-bottom: .75em;
+  }
+  
+  
+  .form-checkboxes .form-item{
+    width: 47%;
+    height: 2em;
+    display: inline-block;
+    text-align: left;
+  }
+}

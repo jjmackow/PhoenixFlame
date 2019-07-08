@@ -1,0 +1,10 @@
+name = Trim
+description = Strips whitespace from all input prior to validation or saving.
+core = 7.x
+
+; Information added by Drupal.org packaging script on 2015-02-25
+version = "7.x-1.0"
+core = "7.x"
+project = "trim"
+datestamp = "1424878983"
+

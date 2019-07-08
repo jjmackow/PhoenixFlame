@@ -1,0 +1,24 @@
+.resume{  
+  background: rgba(255,255,255,.7);
+  border: 3px solid black;
+  padding: 15px;
+  @include border-radius(.5em);
+  @include single-box-shadow();
+  
+  
+  strong{
+    color: maroon;
+    font-size: larger;
+    text-shadow: white 1px 1px 1px;
+  }
+}
+
+.amazon-book{
+  min-height: 200px;
+  img{
+    margin-right: 10px;
+    border: 1px solid gray;
+    @include border-radius(.5em);
+  }
+}
+

@@ -1,0 +1,5 @@
+name = "CSS support for the TCPDF library handler"
+description = "Adds CSS support to the printer-friendly TCPDFmodule"
+core = 7.x
+package = "Printer, email and PDF versions"
+dependencies[] = print_pdf_tcpdf

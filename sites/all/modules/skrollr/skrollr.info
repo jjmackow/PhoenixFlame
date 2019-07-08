@@ -1,0 +1,8 @@
+name = Skrollr
+description = Adds Skrollr libraries to drupal
+core = 7.x
+package = Javascript
+dependencies[] = libraries
+
+version = "7.x-1.0-beta1"
+core = "7.x"

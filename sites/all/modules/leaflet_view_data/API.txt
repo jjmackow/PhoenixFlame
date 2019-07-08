@@ -1,0 +1,39 @@
+Leaflet Views Data API
+----------------------
+
+The following is an overview of using the Leaflet Views Data API.
+
+
+Rendering multiple Views layers on a Leaflet map
+------------------------------------------------
+
+Create first a new Leaflet Data Overlay display in Views, and set its format to Leaflet Data Overlay. You should configure the format as a normal Leaflet views format, i.e. select the fields to use for the data source and the popup content.
+
+The following code illustrates defining the Leaflet Data Overlay layers, fetching a standard
+map definition, and outputting the map.
+
+This function can then be used to populate the content a custon defined block for example.
+
+/**
+ * Returns a map for the homepage with four layers.
+ */
+function wm_leaflet_views_home() {
+
+  // Define the layers as view name => display name
+  $layers = array(
+    'wineries' => array(
+      'leaflet_data_1',
+      'leaflet_data_2',
+      'leaflet_data_3',
+    ),
+    'vineyards' => array('leaflet_data_1',),
+    'wine_bars' => array('leaflet_data_1',),
+    'wine_events' => array('leaflet_data_1',),
+  );
+
+  // Fetch a map definition
+  $map = leaflet_map_get_info('OSM Mapnik');
+
+  // Render the map using the API
+  return leaflet_views_data_render_map_layers($map, $layers, '500px');
+}

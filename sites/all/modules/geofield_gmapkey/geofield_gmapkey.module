@@ -1,0 +1,15 @@
+<?php
+
+function geofield_gmapkey_js_alter(&$js) {
+  //dpm($js);
+  $key = "&key=AIzaSyA5ovbFjN5hE7elP14v-8K8IXdHdZ7OCgA";
+
+  //for geofield input widget
+  if(isset($js['//maps.google.com/maps/api/js?sensor=false']))
+    $js['//maps.google.com/maps/api/js?sensor=false']['data'] .= $key;
+
+  //for geofield map views style plugin ?! (I think)
+  if(isset($js['//maps.googleapis.com/maps/api/js?sensor=false']))
+    $js['//maps.googleapis.com/maps/api/js?sensor=false']['data'] .= $key;
+
+}

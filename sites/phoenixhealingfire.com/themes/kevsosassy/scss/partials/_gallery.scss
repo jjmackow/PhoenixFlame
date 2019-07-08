@@ -1,0 +1,87 @@
+.grid-item{
+  overflow: hidden;
+  margin: 5px auto;
+  
+  .img-set{
+    overflow: hidden;
+    display: inline-block;
+    div{
+      overflow: hidden;
+    }
+    img{
+      border: 1px solid $BEIGE;
+      @include transition-duration(.420s);  
+    }
+    
+    &:hover,
+    &:focus{
+    img{
+       transform: scale(1.1);
+    }
+  }
+  }
+}
+ul.pagination,
+ul.pager{
+  margin: auto;
+  display: block;
+  width: 350px;
+  @include border-radius(10px);
+  border: 1px solid white;
+  background: $SLATE;
+  overflow: hidden;
+  
+  li{
+  >*{
+      @include border-radius(30px);
+      margin: auto 2px;    
+    }
+    a{
+
+    }
+    &.active{
+      span{     
+      }          
+    }
+    &:first-of-type{
+      *{
+        margin-left: 0px;        
+      }
+    }
+    &:last-of-type{
+      *{
+        margin-right: 0px;        
+      }
+    }
+    &.pager-current{
+      color: $SAMPLAEBLUE;
+    }
+  }
+}
+
+
+.view-blog.view-display-id-thoughts_art_page{
+  background: url($mask_bg_dark);
+  @include border-radius(10px);
+}
+
+.price{
+  display: block;
+  
+  width: 270px;
+  height: 70px;
+  
+  background-color: red;
+  background: url($buy_from_amazon) no-repeat;
+  background-size: 190px 40px;
+  background-position: right top;
+  
+  &:hover,
+  &:focus{
+    text-decoration: none;
+  }
+}
+h5 p{
+  color: $SLATE;
+  font-style: italic;
+}

@@ -1,0 +1,4 @@
+Amazon Wysiwyg 7.x-2.x-dev, xxxx-xx-xx
+--------------------------------------
+#2918260 by marcelovani: Added support for multiple locations
+#2885022 by marcelovani: Changed function _amazon_wysiwyg_build_widget() to amazon_wysiwyg_fetch()

@@ -1,0 +1,11 @@
+name: Hover CSS
+type: module
+description: A collection of CSS3 powered hover effects to be applied to links, buttons, logos, SVG, featured images and so on.
+# core: 8.x
+package: Other
+
+# Information added by Drupal.org packaging script on 2017-08-22
+version: '7.x-1.x-dev'
+core: '7.x'
+project: 'hover_css'
+datestamp: 1503417846

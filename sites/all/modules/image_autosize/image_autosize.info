@@ -1,0 +1,12 @@
+name = Image Autosize
+description = Filter to automatically replace image with image style based on alignment.
+package = Input filters
+dependencies[] = image
+core = 7.x
+
+; Information added by Drupal.org packaging script on 2014-07-22
+version = "7.x-1.2+4-dev"
+core = "7.x"
+project = "image_autosize"
+datestamp = "1406064228"
+

@@ -1,0 +1,8 @@
+name = Geofield gmap key
+description = "Google Map key for geofield."
+dependencies[] = geofield_gmap
+core = 7.x
+
+files[] = geofield_gmapkey.module
+
+

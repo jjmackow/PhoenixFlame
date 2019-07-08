@@ -1,0 +1,53 @@
+<?php
+
+/**
+ * @file
+ * Set up for the requirements page for ScrollMagic javascript library.
+ */
+
+/**
+ * Implements hook_requirements().
+ */
+function scrollmagic_requirements($phase) {
+  $requirements = array();
+  $t = get_t();
+
+  // Report the version of ScrollMagic javascript library.
+  if ($phase == 'runtime') {
+    $requirements['scrollmagic']['title'] = $t('ScrollMagic Javascript library');
+
+    $library = libraries_get_libraries();
+    $installed = (isset($library['scrollmagic'])) ? TRUE : FALSE;
+    if ($installed) {
+      $requirements['scrollmagic']['severity'] = REQUIREMENT_OK;
+      $requirements['scrollmagic']['value'] = $t('Installed');
+      $scrollmagic = libraries_detect('scrollmagic');
+      $requirements['scrollmagic']['value'] .= ' (' . $scrollmagic['version'] . ')';
+    }
+    else {
+      drupal_set_message($t('You should install the ScrollMagic Javascript library. 
+        Please read the installation instructions in the README.txt file of the
+         scrollmagic.module.'), 'warning'
+      );
+      $requirements['scrollmagic']['value'] = $t('Not installed');
+      $requirements['scrollmagic']['severity'] = REQUIREMENT_ERROR;
+      $requirements['scrollmagic']['description'] = $t("Please download the ScrollMagic Javascript library from <a href='@link' target='_blank' title='Click here to download the ScrollMagic JS library'>@link</a>. See ScrollMagicJS module's documentation or its README.txt file to get information about how to install that library.", array('@link' => 'https://github.com/janpaepke/ScrollMagic/tarball/master'));
+    }
+  }
+
+  return $requirements;
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function scrollmagic_uninstall() {
+  $result = db_query("SELECT name FROM {variable} WHERE name LIKE :scrollmagic_name",
+    array(
+      ":scrollmagic_name" => "scrollmagic_%",
+    )
+  );
+  foreach ($result as $variable) {
+    variable_del($variable->name);
+  }
+}

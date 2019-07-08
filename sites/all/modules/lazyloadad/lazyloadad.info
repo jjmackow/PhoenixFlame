@@ -1,0 +1,12 @@
+name = jQuery LazyLoad Ad integration
+description = Integration with jQuery LazyLoad Ad (http://jqueryad.web2ajax.fr/).
+core = 7.x
+version = VERSION
+
+configure = admin/config/system/lazyloadad
+; Information added by drupal.org packaging script on 2013-09-30
+version = "7.x-1.0+7-dev"
+core = "7.x"
+project = "lazyloadad"
+datestamp = "1380584669"
+

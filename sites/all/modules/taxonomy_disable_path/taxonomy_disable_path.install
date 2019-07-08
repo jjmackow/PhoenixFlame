@@ -1,0 +1,20 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function taxonomy_disable_path_uninstall() {
+  $prefix = 'taxonomy_disable_path_';
+  $var_names = db_query('SELECT name FROM {variable} WHERE name LIKE :name', array(
+    ':name' => db_like($prefix) . '%',
+  ))->fetchAll();
+
+  foreach ($var_names as $var_name) {
+    variable_del($var_name->name);
+  }
+}

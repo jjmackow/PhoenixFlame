@@ -1,0 +1,69 @@
+<?php
+
+/**
+ * @file
+ * Requirements page for Hover Css.
+ */
+
+/**
+ * Implements hook_requirements().
+ */
+
+/**
+ * Verify that the library files exist.
+ *
+ * @param array $library
+ *   The library to verify.
+ *
+ * @return bool
+ *   TRUE if all files of this library exists, FALSE otherwise
+ *
+ * @see https://drupal.org/node/2231385
+ */
+/**
+ * Implements hook_requirements().
+ */
+function hover_css_requirements($phase) {
+  $requirements = array();
+
+  // Report the version of Hover.
+  if ($phase == 'runtime') {
+    // Make sure Libraries is loaded before loading Hover.
+    drupal_load('module', 'libraries');
+    $hover = libraries_detect('hover');
+    $requirements['hover'] = array(
+      'title' => $hover['name'],
+      'severity' => $hover['installed'] ? REQUIREMENT_OK : REQUIREMENT_WARNING,
+      'value' => $hover['installed'] ? $hover['version'] : $hover['error message'],
+    );
+  }
+
+  return $requirements;
+}
+
+/**
+ * Verify that the library files exist.
+ *
+ * @param array $library
+ *   The library to verify.
+ *
+ * @return bool
+ *   TRUE if all files of this library exists, FALSE otherwise
+ *
+ * @see https://drupal.org/node/2231385
+ */
+function _hover_css_verify_library(array $library) {
+
+  $exists = TRUE;
+  if (array_key_exists('css', $library)) {
+    foreach ($library['css'] as $css) {
+      if ($css['type'] == 'file') {
+        if (!file_exists(DRUPAL_ROOT . '/' . $css['data'])) {
+          $exists = FALSE;
+        }
+      }
+    }
+  }
+
+  return $exists;
+}

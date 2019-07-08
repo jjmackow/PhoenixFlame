@@ -1,0 +1,121 @@
+<?php
+
+/**
+* @file
+* Skrollr module file
+*
+* Outputs skrollr javascript link statements and forms and outputs skrollr library javascript  
+* initialization
+*/
+
+/**
+ * Implements hook_menu().
+ */
+function skrollr_menu() {
+$items = array();
+$items['admin/config/user-interface/skrollr'] = array( 
+  'title' => 'Skrollr', 
+  'description' => 'Configuration for the Skrollr module.', 
+  'page callback' => 'drupal_get_form', 
+  'page arguments' => array('skrollr_admin_form'), 
+  'access arguments' => array('administer site configuration'),
+  'file' => 'skrollr.admin.inc',
+  'type' => MENU_NORMAL_ITEM, 
+  );
+
+return $items;
+}
+
+/**
+ * Implements hook_init().
+ */
+function skrollr_init() {
+  if (module_exists('libraries') && variable_get('enable_skrollr', FALSE)) {
+ 
+   //load skrollr stylesheets first so it can parse the pages css files in preparation for loading skrollr
+    if (variable_get('enable_skrollr_stylesheets', FALSE)) {
+      $skrollr_style_path = libraries_get_path('skrollr') . '/' . variable_get('skrollr_stylesheets_filename', 'skrollr.stylesheets.min.js') ;
+      drupal_add_js($skrollr_style_path, array( 'type' => 'file', 'scope' => 'footer'));
+    }
+    
+    $skrollr_path = libraries_get_path('skrollr') . '/' . variable_get('skrollr_filename', 'skrollr.min.js');
+    drupal_add_js($skrollr_path, array( 'type' => 'file', 'scope' => 'footer'));
+    
+    if (variable_get('enable_skrollr_stylesheets', FALSE)) {
+      $skrollr_menu_path = libraries_get_path('skrollr') . '/' . variable_get('skrollr_menu_filename', 'skrollr.menu.min.js');
+      drupal_add_js($skrollr_menu_path,  array( 'type' => 'file', 'scope' => 'footer'));
+    }
+    
+    if (variable_get('enable_skrollr_ie', FALSE)) {
+      //if ie < 9 add skrollr helper library
+     
+      preg_match('/MSIE (.*?);/', $_SERVER['HTTP_USER_AGENT'], $matches);
+      if (count($matches)<2) {
+        preg_match('/Trident\/\d{1,2}.\d{1,2}; rv:([0-9]*)/', $_SERVER['HTTP_USER_AGENT'], $matches);
+      }
+      $ie_version=99;
+
+      if (count($matches)>1) {
+        //Then we're using IE
+        $ie_version = $matches[1];
+      }
+
+      if ($ie_version < 9) {
+        $skrollr_ie_path = libraries_get_path('skrollr') . '/' . variable_get('skrollr_ie_filename', 'skrollr.ie.min.js');
+        drupal_add_js($skrollr_ie_path, array( 'type' => 'file', 'scope' => 'footer'));
+      }
+    }
+
+    $skrollr_init_js = 'var s = skrollr.init({';
+
+   if (variable_get('skrollr_smooth_scrolling', TRUE)) {
+     $skrollr_init_js .= ' smoothScrolling : true, ';
+   }
+
+   if (variable_get('skrollr_smooth_scrolling_duration', FALSE)) {
+     $skrollr_init_js .= ' smoothScrollingDuration : ' . variable_get('skrollr_smooth_scrolling_duration') . ', ';
+   }
+
+   if (variable_get('skrollr_constants', FALSE)) {
+     $skrollr_init_js .= ' constants : ' . variable_get('skrollr_constants') . ', ';
+   }
+
+   if (variable_get('skrollr_scale', FALSE)) {
+     $skrollr_init_js .= ' scale : ' . variable_get('skrollr_scale') . ', ';
+   }
+
+   if (!variable_get('skrollr_force_height', FALSE)) {
+     $skrollr_init_js .= ' forceHeight : false, ';
+   }
+
+   if (variable_get('skrollr_mobile_check', FALSE)) {
+     $skrollr_init_js .= ' mobileCheck : ' . variable_get('skrollr_mobile_check') . ', ';
+   }
+
+   $skrollr_init_js .= ' mobileDeceleration : ' . variable_get('skrollr_mobile_deceleration', .004) . ', ';
+
+   $edge_strategy = "'" . variable_get('skrollr_edge_strategy', "'set'") . "'";
+
+   if ($edge_strategy == "'ease'") {
+     $edge_strategy =   variable_get('skrollr_edge_strategy_ease_function');
+   }
+
+   $skrollr_init_js .= ' edgeStrategy : ' . $edge_strategy . ', ';
+
+   if (variable_get('skrollr_before_render', FALSE)) {
+     $skrollr_init_js .= ' beforerender: ' . variable_get('skrollr_before_render') . ',';
+   }
+
+   if (variable_get('skrollr_render', FALSE)) {
+     $skrollr_init_js .= ' render: ' . variable_get('skrollr_render') . ',';
+   }
+
+   if (variable_get('skrollr_easing', FALSE)) {
+     $skrollr_init_js .= ' easing: {' . variable_get('skrollr_easing') . '},';
+   }
+
+   $skrollr_init_js .= '});';
+   drupal_add_js($skrollr_init_js, array('type' => 'inline', 'scope' => 'footer'));
+ }//end if skrollr enabled
+}//end skrollr_init()
+

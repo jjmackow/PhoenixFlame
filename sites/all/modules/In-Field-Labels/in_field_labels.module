@@ -1,0 +1,49 @@
+<?php
+
+define('IN_FIELD_LABELS_DEFAULT_FORMS', "user-register-form\nuser-login");
+
+/**
+ * Implement hook_library()
+ */
+function in_field_labels_library() {
+  $library['jquery.infieldlabel'] = array(
+    'title' => 'In Field Label',
+    'website' => 'http://fuelyourcoding.com/scripts/infield',
+    'version' => '0.1.2',
+    'js'    => array(
+      drupal_get_path('module', 'in_field_labels') . '/js/jquery.infieldlabel.min.js' => array(),
+    ),
+  );
+  return $library;
+}
+
+/**
+ * Implement_hook_menu()
+ */
+function in_field_labels_menu() {
+  $items['admin/config/user-interface/in-field-labels'] = array(
+    'title' => 'In Field Labels',
+    'description' => 'Settings for In Field Labels library',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('in_field_labels_admin'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'in_field_labels.admin.inc',
+  );
+  return $items;
+}
+
+/**
+ * Implement hook_form_alter()
+ */
+function in_field_labels_form_alter(&$form, &$form_state, $form_id) {
+  $forms = variable_get('in_field_labels_forms', IN_FIELD_LABELS_DEFAULT_FORMS);
+  if ('*' == $forms || in_array($form['#id'], array_map('trim', explode("\n", $forms))) || in_array(str_replace('_', '-', $form['#form_id']), array_map('trim', explode("\n", $forms)))) {
+    // This class trigges the functionality.
+    $form['#attributes']['class'][] = 'in-field-labels';
+
+    $form['#attached']['library'][] = array('in_field_labels', 'jquery.infieldlabel');
+    $form['#attached']['js'][] = drupal_get_path('module', 'in_field_labels'). '/js/in_field_labels.js';
+    $form['#attached']['css'][] = drupal_get_path('module', 'in_field_labels'). '/css/in_field_labels.css';
+  }
+}
+

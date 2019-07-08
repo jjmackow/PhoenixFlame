@@ -1,0 +1,25 @@
+<?php
+
+/**
+ * @file
+ * Fractionslider installation functions.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function fractionslider_uninstall() {
+  $vars_to_del = array(
+    'fractionslider_markup',
+    'fractionslider_controls',
+    'fractionslider_pager',
+    'fractionslider_dimensions',
+    'fractionslider_fullwidth',
+    'fractionslider_responsive',
+    'fractionslider_increase',
+    'fractionslider_autochange',
+  );
+  foreach ($vars_to_del as $var) {
+    variable_del($var);
+  }
+}

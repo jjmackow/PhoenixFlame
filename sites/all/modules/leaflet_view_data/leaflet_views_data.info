@@ -1,0 +1,9 @@
+name = Leaflet Views Data
+description = Leaflet Views Data
+core = 7.x
+package = Leaflet
+dependencies[] = leaflet
+dependencies[] = leaflet_views
+files[] = leaflet_views_data.views.inc
+files[] = leaflet_views_data_plugin_display_leaflet_data.inc
+files[] = leaflet_views_data_plugin_style.inc

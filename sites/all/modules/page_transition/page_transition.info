@@ -1,0 +1,11 @@
+name = Page Transition
+description = Helps to add page transition to the drupal pages.
+configure = admin/config/page_transition/manage
+package = User interface
+core = 7.x
+; Information added by Drupal.org packaging script on 2017-03-27
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "page_transition"
+datestamp = "1490638685"
+

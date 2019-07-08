@@ -1,0 +1,129 @@
+@import "compass/css3";
+@import "compass/utilities";
+@import "compass/css3/transform";
+
+@mixin calc(){
+  
+}
+.resMenu .horizontal-menu>li,
+.block-system.block-menu .collapsed,
+.block-system.block-menu .expanded,
+.block-system.block-menu .leaf{
+  background: transparent;
+  min-width: 6rem;
+  margin: auto .35rem;
+  padding: auto .35rem;
+  >a{
+    &::before{      
+      background-position: 0px -32px;
+      content: " ";
+    }
+    &.active,
+    &:hover,
+    &:focus{
+      &::before{
+        content: " * ";            
+        color: white;
+        background-position: 0px 0px;
+      }
+    }
+  }
+  a{
+    height: 32px;
+    width: 14rem;
+    max-width: 130px;
+    margin: auto .15rem;
+    text-align: center;
+    color: $menu-button-color;
+    @include background-image(linear-gradient(to bottom right, $menu-button-bg1, $menu-button-bg2));
+    font-size: 1.4rem;
+    border: 1px 1px $btn-default-border;
+    @include border-radius(4px);
+    @include transition-duration(.420s);    
+    &::before{
+      margin-right: 2px;
+      @include transition-duration(.84s);
+      color: transparent; 
+      display: inline-block;
+    }
+    em{          
+      font-style: normal;
+      b{
+        color: $menu-button-color-em;  
+      }
+    }
+    &.active,
+    &:hover,
+    &:focus{        
+      text-decoration: none;
+      test-shadow: #footer_shadow, 1px,1px,1px);
+      color: $menu-button-highlight-color;
+      @include background-image(linear-gradient(to bottom right,                                        $menu-button-bg, $menu-button-highlight-bg));
+    }
+  }
+}
+li.expanded{
+  >a.active-trail.dropdown-toggle.active{
+    
+  }
+  >ul.dropdown-menu{
+    position: relative;
+    li.leaf{
+      a{
+        
+      }
+    }
+  }
+}
+.bbb{
+
+ul {
+  list-style:none;
+  font-family:'Trebuchet MS';
+  font-size:17px;
+  text-align:center;
+  margin-top:20px;
+}
+
+li {
+  position:relative;
+  display:inline;
+}
+
+li a {
+  text-decoration:none;
+  color:#333;
+  display:inline-block;
+  padding:10px;
+}
+
+span {
+  display:block;
+  
+  height:4px;
+  background:#0088CC;
+  position:absolute;
+  left:10px;
+  bottom:-10px;
+}
+
+li a:hover {
+ 	color:#0088CC;
+}
+
+li a:hover ~ span {
+ 	 animation:ul 0.3s ease-out;
+   background:#333;
+}
+
+@keyframes ul {
+ 	0% { 
+    width:0;
+  }
+  100% { 
+  
+  }
+}
+
+  
+}

@@ -1,0 +1,19 @@
+name = FractionSlider
+description = Integrate FractionSlider JS plugin.
+package = Administration
+core = 7.x
+dependencies[] = jquery_update
+dependencies[] = libraries
+
+configure = admin/config/user-interface/fractionslider
+
+stylesheets[all][] = css/fractionslider.css
+
+scripts[] = js/fractionslider.js
+
+; Information added by Drupal.org packaging script on 2017-04-13
+version = "7.x-2.8"
+core = "7.x"
+project = "views_fractionslider"
+datestamp = "1492063745"
+

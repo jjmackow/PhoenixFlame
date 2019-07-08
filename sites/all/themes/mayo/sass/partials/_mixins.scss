@@ -1,0 +1,163 @@
+@mixin unpublished {
+  color: pink; // target browsers that do not support rgba
+  color: rgba(239, 170, 170, 0.4);
+  font-family: $impact;
+  font-size: 50px;
+  font-weight: 700;
+  line-height: 1.2;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  text-align: center;
+  text-transform: uppercase;
+  word-wrap: break-word;
+
+  @if $legacy-support-for-ie6 or $legacy-support-for-ie7 {
+    .ie6-7 &>* {
+      position: relative; // Otherwise these elements will appear below the "Unpublished" text.
+    }
+  }
+}
+
+
+@mixin rounded-corners($radius=25px) {
+  -moz-border-radius: $radius;
+  -webkit-border-radius: $radius;
+  -khtml-border-radius: $radius;
+  border-radius: $radius;
+}
+
+@mixin rounded($side=top-left, $radius=25px) {
+  border-#{$side}-radius: $radius;
+  -moz-border-radius-#{$side}: $radius;
+  -webkit-border-#{$side}-radius: $radius;
+}
+@mixin rotation($rotation = 90deg){
+      -webkit-transform: rotate($rotation);
+      -moz-transform: rotate($rotation);
+      -o-transform: rotate($rotation);
+      -ms-transform: rotate($rotation);
+      transform: rotate($rotation);
+}
+
+@mixin transition($speed=1s, $style=ease){
+ -webkit-transition: all $speed, $style;
+ -moz-transition: all $speed, $style;
+ -o-transition: all $speed, $style;
+ -ms-transition: all $speed, $style;
+ transition: all $speed, $style;
+}
+
+
+@mixin boxshadow($offset = 0 0 10px, $color = rgba(0, 0, 0, 0.9)){
+-webkit-box-shadow:$offset $color;
+  -moz-box-shadow:$offset $color;
+  box-shadow:$offset $color;
+}
+
+@mixin gradient-vertical($from, $to=transparent) {
+  background: $from;
+  background: -moz-linear-gradient(top,  $from 0%, $to 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$from), color-stop(100%,$to));
+  background: -webkit-linear-gradient(top, $from 0%,$to 100%);
+  background: -o-linear-gradient(top, $from 0%,$to 100%);
+  background: -ms-linear-gradient(top, $from 0%,$to 100%);
+  background: linear-gradient(to bottom, $from 0%,$to 100%);
+  filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=0, startColorstr='#{$from}', endColorstr='#{$to}');
+  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#{$from}', endColorstr='#{$to}')";
+}
+@mixin gradient-horizontal($from, $to=transparent) {
+  background: $from;
+  background: -moz-linear-gradient(top,  $from 0%, $to 100%);
+  background: -webkit-gradient(linear, top right, top right, color-stop(0%,$from), color-stop(100%,$to));
+  background: -webkit-linear-gradient(right, $from 0%,$to 100%);
+  background: -o-linear-gradient(right, $from 0%,$to 100%);
+  background: -ms-linear-gradient(right, $from 0%,$to 100%);
+  background: linear-gradient(to left, $from 0%,$to 100%);
+  filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=0, startColorstr='#{$from}', endColorstr='#{$to}');
+  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#{$from}', endColorstr='#{$to}')";
+}
+
+@mixin blueprint($backgroundcolor="#269", $linecolor2=rgba(255,255,255,.3), $linecolor=white){
+  background-color:$backgroundcolor;
+  background-image: linear-gradient($linecolor 2px, transparent 2px),
+  linear-gradient(90deg, $linecolor 2px, transparent 2px),
+  linear-gradient($linecolor2 1px, transparent 1px),
+  linear-gradient(90deg, $linecolor2 1px, transparent 1px);
+  background-size:100px 100px, 100px 100px, 20px 20px, 20px 20px;
+  background-position:-2px -2px, -2px -2px, -1px -1px, -1px -1px  
+}
+@mixin arrows($color1=rgba(255,255,255,.3), $color2=#e1ebbd){
+  background:
+    linear-gradient(45deg, $color1 45px, transparent 45px)64px 64px,
+    linear-gradient(45deg, $color1 45px, transparent 45px,transparent 91px, $color2 91px, $color2 135px, transparent 135px),
+    linear-gradient(-45deg, $color1 23px, transparent 23px, transparent 68px,$color1 68px,$color1 113px,transparent 113px,transparent 158px,$color1 158px);
+  background-color:$color2;
+  background-size: 128px 128px;  
+}
+@mixin bricks{
+  background-color: silver;
+  background-image: linear-gradient(335deg, #b00 23px, transparent 23px),
+  linear-gradient(155deg, #d00 23px, transparent 23px),
+  linear-gradient(335deg, #b00 23px, transparent 23px),
+  linear-gradient(155deg, #d00 23px, transparent 23px);
+  background-size: 58px 58px;	
+  background-position: 0px 2px, 4px 35px, 29px 31px, 34px 6px; 
+}
+@mixin diagonalstrips($strip1=gray, $strip2=rgba(255,255,255,.5), $strip_width=35px){
+  
+  background-color: $strip1;
+  background-image: repeating-linear-gradient(45deg, transparent, transparent $strip_width, $strip2 $strip_width, $strip2 ($strip_width*2));
+}
+@mixin microbial($linecolor=#613, $background2=#8a3, $background=rgba(96, 16, 48, .1)){
+  background:
+  radial-gradient(circle at 0% 50%, $background 9px, $linecolor 10px, $background 11px) 0px 10px,
+  radial-gradient(at 100% 100%, $background 9px, $linecolor 10px, $background 11px),
+  $background2;
+  background-size: 20px 20px;
+}
+@mixin yinyang($background=#63773F, $yin=rgba(54,78,39,0), $yang=rgba(210,202,171,0),$color3=#D2CAAB,$color4=#364E27){
+  background: 
+    radial-gradient(circle at 50% 59%, $color3 3%, $color4 4%, $color4 11%, $yin 12%, $yin) 50px 0,
+    radial-gradient(circle at 50% 41%, $color4 3%, $color3 4%, $color3 11%, $yang 12%, $yang) 50px 0,
+    radial-gradient(circle at 50% 59%, $color3 3%, $color4 4%, $color4 11%, $yin 12%, $yin) 0 50px,
+    radial-gradient(circle at 50% 41%, #364E27 3%, $color3 4%, $color3 11%, $yang 12%, $yang) 0 50px,
+    radial-gradient(circle at 100% 50%, $color3 16%, $yang 17%),
+    radial-gradient(circle at 0% 50%, $color4 16%, $yin 17%),
+    radial-gradient(circle at 100% 50%, $color3 16%, $yang 17%) 50px 50px,
+    radial-gradient(circle at 0% 50%, $color4 16%, $yin 17%) 50px 50px;
+  background-color:$background;
+  background-size:100px 100px;
+}
+@mixin linedpaper($bg=#ffffff, $vertline=#abced4, $lines=#eee, $linesize=1.2em, $leftmargin=80px){
+  background-color: $bg; 
+  background-image: 
+  linear-gradient(90deg, transparent ($leftmargin - 1px), $vertline ($leftmargin - 1px), $vertline ($leftmargin+1px), transparent ($leftmargin+1px)),
+  linear-gradient($lines .1em, transparent .1em);
+  background-size: 100% $linesize;
+}
+@mixin madris($madris_bg = hsl(24, 73%, 82%)){
+  background-color: $madris_bg;
+  background-image: repeating-linear-gradient(45deg, transparent 5px, hsla(197, 62%, 11%, 0.5) 5px, hsla(197, 62%, 11%, 0.5) 10px,                  
+    hsla(5, 53%, 63%, 0) 10px, hsla(5, 53%, 63%, 0) 35px, hsla(5, 53%, 63%, 0.5) 35px, hsla(5, 53%, 63%, 0.5) 40px,
+    hsla(197, 62%, 11%, 0.5) 40px, hsla(197, 62%, 11%, 0.5) 50px, hsla(197, 62%, 11%, 0) 50px, hsla(197, 62%, 11%, 0) 60px,                
+    hsla(5, 53%, 63%, 0.5) 60px, hsla(5, 53%, 63%, 0.5) 70px, hsla(35, 91%, 65%, 0.5) 70px, hsla(35, 91%, 65%, 0.5) 80px,
+    hsla(35, 91%, 65%, 0) 80px, hsla(35, 91%, 65%, 0) 90px, hsla(5, 53%, 63%, 0.5) 90px, hsla(5, 53%, 63%, 0.5) 110px,
+    hsla(5, 53%, 63%, 0) 110px, hsla(5, 53%, 63%, 0) 120px, hsla(197, 62%, 11%, 0.5) 120px, hsla(197, 62%, 11%, 0.5) 140px       
+  ),
+  repeating-linear-gradient(135deg, transparent 5px, hsla(197, 62%, 11%, 0.5) 5px, hsla(197, 62%, 11%, 0.5) 10px, 
+    hsla(5, 53%, 63%, 0) 10px, hsla(5, 53%, 63%, 0) 35px, hsla(5, 53%, 63%, 0.5) 35px, hsla(5, 53%, 63%, 0.5) 40px,
+    hsla(197, 62%, 11%, 0.5) 40px, hsla(197, 62%, 11%, 0.5) 50px, hsla(197, 62%, 11%, 0) 50px, hsla(197, 62%, 11%, 0) 60px,                
+    hsla(5, 53%, 63%, 0.5) 60px, hsla(5, 53%, 63%, 0.5) 70px, hsla(35, 91%, 65%, 0.5) 70px, hsla(35, 91%, 65%, 0.5) 80px,
+    hsla(35, 91%, 65%, 0) 80px, hsla(35, 91%, 65%, 0) 90px, hsla(5, 53%, 63%, 0.5) 90px, hsla(5, 53%, 63%, 0.5) 110px,
+    hsla(5, 53%, 63%, 0) 110px, hsla(5, 53%, 63%, 0) 140px, hsla(197, 62%, 11%, 0.5) 140px, hsla(197, 62%, 11%, 0.5) 160px       
+  );
+}
+@mixin triangle-right($color=gray, $height=50px, $width=100px) {
+	width: 0;
+	height: 0;
+	border-top: $height solid transparent;
+	border-left: $width solid $color;
+	border-bottom: $height solid transparent;
+}

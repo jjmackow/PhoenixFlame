@@ -1,0 +1,154 @@
+<?php
+/**
+ * @file
+ * Page Transition Video Tracking.
+ */
+
+/**
+ * Define admin config url.
+ */
+define("PAGE_TRANSITION_CONFIG_PAGE_URL", "admin/config/page_transition");
+
+/**
+ * Implements hook_menu().
+ */
+function page_transition_menu() {
+  $items = array();
+  $items[PAGE_TRANSITION_CONFIG_PAGE_URL] = array(
+    'title' => 'Page Transition',
+    'description' => 'Configure Page Transition',
+    'position' => 'right',
+    'page callback' => 'system_admin_menu_block_page',
+    'access arguments' => array('administer page transition'),
+    'file' => 'system.admin.inc',
+    'file path' => drupal_get_path('module', 'system'),
+  );
+  $items[PAGE_TRANSITION_CONFIG_PAGE_URL . '/manage'] = array(
+    'title' => 'Manage Transitions',
+    'description' => 'Configure page transitions.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('page_transition_manage'),
+    'access arguments' => array('administer page transition'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'page_transition.admin.inc',
+    'file path' => drupal_get_path('module', 'page_transition'),
+  );
+  $items[PAGE_TRANSITION_CONFIG_PAGE_URL . '/manage/add'] = array(
+    'title' => 'Add Transition',
+    'description' => 'Create new transition.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('page_transition_add'),
+    'access arguments' => array('administer page transition'),
+    'type' => MENU_LOCAL_ACTION,
+    'file' => 'page_transition.admin.inc',
+    'file path' => drupal_get_path('module', 'page_transition'),
+  );
+  $items[PAGE_TRANSITION_CONFIG_PAGE_URL . '/manage/edit/%'] = array(
+    'title' => 'Edit Transition',
+    'description' => 'Edit existing transition.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('page_transition_add'),
+    'access arguments' => array('administer page transition'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'page_transition.admin.inc',
+    'file path' => drupal_get_path('module', 'page_transition'),
+  );
+  $items[PAGE_TRANSITION_CONFIG_PAGE_URL . '/manage/delete/%'] = array(
+    'title' => 'Delete Transition',
+    'description' => 'Edit existing transition.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('page_transition_delete'),
+    'access arguments' => array('administer page transition'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'page_transition.admin.inc',
+    'file path' => drupal_get_path('module', 'page_transition'),
+  );
+  $items[PAGE_TRANSITION_CONFIG_PAGE_URL . '/manage/status/%/%'] = array(
+    'page callback' => 'page_transition_status_update',
+    'page arguments' => array(5, 6),
+    'access arguments' => array('administer page transition'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'page_transition.admin.inc',
+    'file path' => drupal_get_path('module', 'page_transition'),
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_libraries_info().
+ */
+function page_transition_libraries_info() {
+  $libraries['animsition'] = array(
+    'name' => 'Animsition',
+    'vendor url' => 'http://git.blivesta.com/animsition/',
+    'download url' => 'https://github.com/blivesta/animsition/archive/master.zip',
+    'version arguments' => array(
+      'file' => 'dist/js/animsition.min.js',
+      'pattern' => '/animsition v(\d+\.+\d+\.+\d)/',
+      'lines' => 2,
+    ),
+    'files' => array(
+      'js' => array(
+        'dist/js/animsition.min.js',
+      ),
+      'css' => array(
+        'dist/css/animsition.min.css',
+      ),
+    ),
+  );
+  return $libraries;
+}
+
+/**
+ * Implements hook_page_build().
+ */
+function page_transition_page_build(&$page) {
+  module_load_include('inc', 'page_transition', 'page_transition');
+  $library = libraries_detect('animsition');
+  if (!empty($library['installed'])) {
+    libraries_load('animsition');
+    $page_transition_js = drupal_get_path('module', 'page_transition') . '/page_transition.js';
+    $page['content']['#attached']['js'][] = array(
+      'data' => $page_transition_js,
+      'type' => 'file',
+      'scope' => 'header',
+    );
+    page_transition_load_js();
+  }
+}
+
+/**
+ * Implements hook_permission().
+ */
+function page_transition_permission() {
+  return array(
+    'administer page transition' => array(
+      'title' => t('Administer Page Transitions'),
+      'description' => t('Manage Page Transition settings.'),
+      'restrict access' => TRUE,
+    ),
+  );
+}
+
+/**
+ * Implements hook_help().
+ */
+function page_transition_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#page_transition':
+      $output = '<h3>' . t('About') . '</h3>';
+	  $output .= '<p>' . t('Page Transition provides multiple Animation effect to your Drupal site. Show your pages with stylish transitions. This module helps you to add various page transitions to the Drupal pages by using jQuery Animsition plugin. Animsition is a simple and easy jQuery plugin for css animated page transitions.') . '</p>';
+      $output .= '<h3>' . t('Features') . '</h3>';
+	  $output .= '<p>Supports 58 DIFFERENT ANIMATIONS</p>';
+      $output .= '<h3>' . t('Browser Support') . '</h3>';
+	  $output .= '<p>'. t('REQUIRES A BROWSER THAT SUPPORTS CSS3.') . '</p>';
+	  $output .= '<ul>';
+	  $output .= '<li>' . t('IE10+') . '</li>';
+	  $output .= '<li>' . t('Safari') . '</li>';
+	  $output .= '<li>' . t('Chrome') . '</li>';
+	  $output .= '<li>' . t('Firefox') . '</li>';
+	  $output .= '</ul>';
+	  $output .= '<p>' . t('If need to add page transition for a particular page then, add the transition element as <em>.page-node-1 #page-wrapper</em>') . '</p>';
+	  return $output;
+  }
+}

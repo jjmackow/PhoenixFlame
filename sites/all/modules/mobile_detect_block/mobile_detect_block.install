@@ -1,0 +1,72 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the mobile_detect_block module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function mobile_detect_block_schema() {
+  $schema['mobile_detect_block'] = array(
+    'description' => 'Sets up display criteria for blocks based on device detection using Mobile Detect.',
+    'fields' => array(
+      'module' => array(
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'description' => "The block's origin module, from {block}.module.",
+      ),
+      'delta' => array(
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'description' => "The block's unique delta within module, from {block}.delta.",
+      ),
+      'is_desktop_device' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'size' => 'tiny',
+        'description' => 'Hide or show blocks in desktop devices. (0 = show,1 =hide)',
+      ),
+      'is_mobile_device' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'size' => 'tiny',
+        'description' => 'Hide or show blocks in mobile devices. (0 = show,1 =hide)',
+      ),
+      'is_tablet_device' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'size' => 'tiny',
+        'description' => 'Hide or show blocks in tablet devices. (0 = show,1 =hide)',
+      ),
+    ),
+    'primary key' => array('module', 'delta'),
+    'indexes' => array(
+      'module' => array('module'),
+      'delta' => array('delta'),
+    ),
+  );
+
+  return $schema;
+}
+
+/**
+ * Add is_desktop_device field to {mobile_detect_block} table.
+ */
+function mobile_detect_block_update_7100() {
+  $spec = array(
+    'type' => 'int',
+    'description' => 'Hide or show blocks in desktop devices. (0 = show,1 =hide)',
+    'length' => 4,
+    'default' => 0,
+    'size' => 'tiny',
+    'not null' => TRUE,
+  ); 
+  db_add_field('mobile_detect_block', 'is_desktop_device', $spec);
+}

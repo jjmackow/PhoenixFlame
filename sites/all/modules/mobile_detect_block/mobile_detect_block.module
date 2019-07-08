@@ -1,0 +1,183 @@
+<?php
+
+/**
+ * @file
+ */
+
+const MOBILE_DETECT_BLOCK_NOT_RESTRICT = 0;
+const MOBILE_DETECT_BLOCK_HIDE = 1;
+
+
+
+/**
+ * @file Mobile_detect Block.
+ * Block visibility options for mobile devices using mobile_detect detection.
+ */
+
+/**
+ * Implements hook_form_FORMID_alter().
+ *
+ * @see block_add_block_form()
+ */
+function mobile_detect_block_form_block_add_block_form_alter(&$form, &$form_state) {
+  mobile_detect_block_form_block_admin_configure_alter($form, $form_state);
+}
+
+/**
+ * Implements hook_form_FORMID_alter().
+ * Adds mobile specific visibility options to block configuration form.
+ *
+ * @see block_admin_configure()
+ */
+function mobile_detect_block_form_block_admin_configure_alter(&$form, &$form_state) {
+  $device_visibility = db_query("SELECT is_desktop_device,is_mobile_device,is_tablet_device FROM {mobile_detect_block} WHERE module = :module AND delta = :delta", array(
+    ':module' => $form['module']['#value'],
+    ':delta' => $form['delta']['#value'],
+  ))->fetchAssoc();
+
+  if ($device_visibility) {
+    $is_desktop_device = $device_visibility['is_desktop_device'];
+    $is_mobile_device = $device_visibility['is_mobile_device'];
+    $is_tablet_device = $device_visibility['is_tablet_device'];
+  }
+  else {
+    $is_desktop_device = MOBILE_DETECT_BLOCK_NOT_RESTRICT;
+    $is_mobile_device = MOBILE_DETECT_BLOCK_NOT_RESTRICT;
+    $is_tablet_device = MOBILE_DETECT_BLOCK_NOT_RESTRICT;
+  }
+
+  $form['visibility']['mobile_detect_block'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Mobile Detect'),
+    '#group' => 'visibility',
+    '#weight' => 6,
+    '#tree' => TRUE,
+    '#attached' => array(
+      'js' => array(drupal_get_path('module', 'mobile_detect_block') . '/mobile_detect_block.js'),
+    ),
+  );
+
+  $form['visibility']['mobile_detect_block']['is_desktop_device'] = array(
+    '#type' => 'radios',
+    '#title' => t('Hide or show this block in desktop   devices'),
+    '#default_value' => $is_desktop_device,
+    '#options' => array(
+      MOBILE_DETECT_BLOCK_NOT_RESTRICT => t('Not Restrict'),
+      MOBILE_DETECT_BLOCK_HIDE => t('Hide'),
+    ),
+  );
+
+  $form['visibility']['mobile_detect_block']['is_tablet_device'] = array(
+    '#type' => 'radios',
+    '#title' => t('Hide or show this block in tablet devices'),
+    '#default_value' => $is_tablet_device,
+    '#options' => array(
+      MOBILE_DETECT_BLOCK_NOT_RESTRICT => t('Not restricted'),
+      MOBILE_DETECT_BLOCK_HIDE => t('Hide'),
+    ),
+  );
+
+  $form['visibility']['mobile_detect_block']['is_mobile_device'] = array(
+    '#type' => 'radios',
+    '#title' => t('Hide or show this block in smalltouch mobile devices'),
+    '#default_value' => $is_mobile_device,
+    '#options' => array(
+      MOBILE_DETECT_BLOCK_NOT_RESTRICT => t('Not restricted'),
+      MOBILE_DETECT_BLOCK_HIDE => t('Hide'),
+    ),
+  );
+
+  $form['#submit'][] = 'mobile_detect_block_form_block_admin_configure_submit';
+}
+
+/**
+ * Form submit handler for block configuration form.
+ *
+ * @see mobile_detect_block_form_block_admin_configure_alter()
+ */
+function mobile_detect_block_form_block_admin_configure_submit($form, &$form_state) {
+  db_delete('mobile_detect_block')
+    ->condition('module', $form_state['values']['module'])
+    ->condition('delta', $form_state['values']['delta'])
+    ->execute();
+
+  $device_visibility = $form_state['values']['mobile_detect_block'];
+
+  if ($device_visibility['is_mobile_device'] || $device_visibility['is_tablet_device'] || $device_visibility['is_desktop_device']) {
+
+    $query = db_insert('mobile_detect_block')->fields(array(
+      'is_mobile_device',
+      'is_tablet_device',
+      'is_desktop_device',
+      'module',
+      'delta',
+    ));
+    $query->values(array(
+      'is_mobile_device' => $device_visibility['is_mobile_device'],
+      'is_tablet_device' => $device_visibility['is_tablet_device'],
+      'is_desktop_device' => $device_visibility['is_desktop_device'],
+      'module' => $form_state['values']['module'],
+      'delta' => $form_state['values']['delta'],
+    ));
+    $query->execute();
+  }
+}
+
+/**
+ * Implements hook_block_list_alter().
+ * Check the mobile detect specific visibilty settings.
+ * Remove the block if the visibility conditions are not met.
+ */
+function mobile_detect_block_block_list_alter(&$blocks) {
+  global $theme_key;
+
+  if (function_exists('mobile_detect_get_object')) {
+    $detect = mobile_detect_get_object();
+    // Boolean false/true.
+    $is_mobile = $detect->isMobile();
+    // Boolean false/true.
+    $is_tablet = $detect->isTablet();
+    // Boolean false/true.
+    $is_desktop = !$is_mobile && !$is_tablet;
+  }
+  else {
+    return;
+  }
+
+  $device_visibility = db_select("mobile_detect_block")
+    ->fields('mobile_detect_block')
+    ->execute()
+    ->fetchAll();
+
+  $visibilities = array();
+  foreach ($device_visibility as $v) {
+    $visibilities[$v->module][$v->delta] = $v;
+  }
+
+  foreach ($blocks as $i => $block) {
+    if (isset($visibilities[$block->module][$block->delta])) {
+      if ($is_desktop) {
+        if(array_key_exists ('is_desktop_device' , $visibilities[$block->module][$block->delta] )){
+          if ($visibilities[$block->module][$block->delta]->is_desktop_device == MOBILE_DETECT_BLOCK_HIDE) {
+            unset($blocks[$i]);
+          }
+        }
+      }
+      elseif ($is_tablet) {
+        if(array_key_exists ('is_tablet_device' , $visibilities[$block->module][$block->delta] )){
+          if ($visibilities[$block->module][$block->delta]->is_tablet_device == MOBILE_DETECT_BLOCK_HIDE) {
+            unset($blocks[$i]);
+          }
+        }
+
+      }
+      elseif ($is_mobile) {
+        if(array_key_exists ('is_mobile_device' , $visibilities[$block->module][$block->delta] )){
+          if ($visibilities[$block->module][$block->delta]->is_mobile_device == MOBILE_DETECT_BLOCK_HIDE) {
+            unset($blocks[$i]);
+          }
+        }
+      }
+    }
+  }
+}

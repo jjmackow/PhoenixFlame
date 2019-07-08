@@ -1,0 +1,187 @@
+@import '_variables.scss';
+@import '_mixins.scss';
+.commoncontrol{
+  display: inline-block;
+  a{
+    color: red;
+    display: inline-block;
+    padding: 0px 6px;
+    @include rounded-corners(3px);
+    @include boxshadow();
+    background: white;
+    
+    @include transition;
+    &:hover,
+    &:focus{
+      @include boxshadow();
+      background: black;
+      color: white;
+      font-size: larger;
+      font-weight: bold;
+    }
+  }
+}
+.region-content-inner{
+  position: relative;  
+}
+.menu-toggle{
+  text-indent: -1000px;
+  margin-top: 5px;
+}
+.content_overlay{
+  right: 15px;
+  position: absolute;
+  z-index: 100;
+  top: 95px;
+  .node-event{
+    margin: 0px;
+    padding: 0px;
+  }
+  .countdownHolder{
+    width: auto;
+    margin:0 auto;
+    font: 40px/1.5 'Open Sans Condensed',sans-serif;
+    text-align:center;
+    letter-spacing:-1px;
+  }
+  .content{    
+    margin: 3px 10px;
+  }
+  .field-name-body{
+    color: #fff4f4;
+    font-weight: bold;
+    line-height: 1em;
+    font-size: 1.25em;
+    text-shadow: 4px 4px 6px rgba(0, 0, 0, 0.98);
+    width: 275px;
+    text-align: center;
+  }
+}
+.node-event{  
+  @include rounded-corners;
+  @include madris;
+}
+.digit{
+  &.static{
+    $bg1=#ea0000;
+    $bg2=#ff3737;
+    box-shadow: 1px 1px 1px rgba(4, 4, 4, 0.35);
+    background-image: linear-gradient(bottom, $bg2 50%, $bg1 50%);
+    background-image: -o-linear-gradient(bottom, $bg2 50%, $bg1 50%);
+    background-image: -moz-linear-gradient(bottom, $bg2 50%, $bg1 50%);
+    background-image: -webkit-linear-gradient(bottom, $bg2 50%, $bg1 50%);
+    background-image: -ms-linear-gradient(bottom, $bg2 50%, $bg1 50%);
+    background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0.5, $bg2), color-stop(0.5, $bg1) );
+  }
+}
+
+.block-demo-content-slideshow-block-1{
+  .event-slider{
+    .views-row{
+      position: relative;
+      img{
+        @include rounded-corners();
+        @include boxshadow();
+      }
+      .commoncontrol{
+        position: absolute;
+        bottom: 15px;
+        left: 15px;
+      }
+    }  
+  }
+}
+#block-blockify-blockify-site-slogan .site-slogan{
+  color: white;
+  float: right;
+  font-size: 
+}
+
+$font-name-size= 1.7em;
+#site-name{
+  width: 315px;
+  overflow: visible;
+  height: 40px;
+  margin-left: 20px;
+  display: inline-block;  
+  font-size: $font-name-size;
+  line-height: 30%;  
+  a{
+    display: inline-block;
+    width: 315px;    
+    height: 40px;
+    color: white;
+    padding: 0px 0px 0px 15px;
+    @include transition(1s, ease);
+    &:focus, &:hover{
+        padding: 0px 15px 0px 0px;
+        b, em{          
+          color: rgba(255, 255, 255, 0.5);
+        }
+        i{          
+          color: orange;
+          font-size: 2em;
+          text-shadow: black 3px 3px 3px;
+        }
+      }
+    }
+    b{
+      @include transition(1s, ease);
+      display: inline-block;      
+      font-size: .8em;
+      font-weight: bold;
+      color: #aad5ff;
+      margin-top: .75em;
+    }
+    em{      
+      display: inline-block;
+      color: gray;
+      text-shadow: black 1px 1px 1px;
+      padding: 0 .15em 0 1.5em;
+      font-size: 2em;
+    }
+    i{      
+      text-shadow: #fff 1px 1px 3px;
+      font-size: $font-name-size*1.2;
+      color: #ff0080;      
+      padding: 0 .05em;
+    }
+    strong{
+      display: block;
+    }
+  }
+}
+
+/**
+* Blocks
+*/
+/* HP blocks: Top advert */
+
+
+.block-shipping-discount,
+.content_overlay{
+  /* HP blocks: Side advert */
+  position: absolute;
+  /* LTR */
+  top: 85px;
+  z-index: 100;
+  #shipping {
+    border-color: #FFF;
+    -moz-border-radius: 80px;
+    -webkit-border-radius: 80px;
+    -khtml-border-radius: 80px;
+    border-radius: 80px;
+    height: 120px;
+    line-height: 24px;
+    padding: 10px 5px;
+    margin-top: 0;
+    width: 130px;
+  }
+}
+.block-shipping-discount{
+  left: -50px;
+}
+
+#nodesinblock-38 .node{
+  border-width: 0px;
+}

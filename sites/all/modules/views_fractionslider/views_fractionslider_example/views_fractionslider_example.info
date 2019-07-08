@@ -1,0 +1,28 @@
+name = Views FractionSlider Example
+description = Example Views FractionSlider block with views and content type.
+core = 7.x
+package = Features
+version = 7.x-1.0-beta1
+project = views_fractionslider_example
+dependencies[] = ctools
+dependencies[] = features
+dependencies[] = fractionslider
+dependencies[] = image
+dependencies[] = text
+dependencies[] = views
+dependencies[] = views_fractionslider
+features[ctools][] = views:views_default:3.0
+features[features_api][] = api:2
+features[field_base][] = field_vfs_body
+features[field_base][] = field_vfs_image
+features[field_instance][] = node-views_fractionslider-field_vfs_body
+features[field_instance][] = node-views_fractionslider-field_vfs_image
+features[node][] = views_fractionslider
+features[views_view][] = views_fractionslider
+
+; Information added by Drupal.org packaging script on 2017-04-13
+version = "7.x-2.8"
+core = "7.x"
+project = "views_fractionslider"
+datestamp = "1492063745"
+

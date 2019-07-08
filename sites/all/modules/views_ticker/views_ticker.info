@@ -1,0 +1,14 @@
+name = Views Ticker
+description = Create custom news ticker.
+package = Views
+dependencies[] = views
+core = 7.x
+
+files[] = includes/views_ticker_style_plugin.inc
+
+; Information added by Drupal.org packaging script on 2014-07-20
+version = "7.x-2.0+8-dev"
+core = "7.x"
+project = "views_ticker"
+datestamp = "1405874029"
+

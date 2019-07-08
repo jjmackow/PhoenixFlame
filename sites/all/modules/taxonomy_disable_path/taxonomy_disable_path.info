@@ -1,0 +1,11 @@
+name = Taxonomy Disable Path
+description = Allows administrators to disable taxonomy term paths on a per-term basis, and redirect the user to a 403 or 404 page.
+core = 7.x
+version = 7.x-1.2
+
+; Information added by drupal.org packaging script on 2013-07-17
+version = "7.x-1.2"
+core = "7.x"
+project = "taxonomy_disable_path"
+datestamp = "1374066968"
+

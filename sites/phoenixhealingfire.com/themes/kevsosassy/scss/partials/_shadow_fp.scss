@@ -1,0 +1,67 @@
+@import "partials/variables";
+@import "partials/bg_mixins";
+.block-views>.announcements>.view-content #small-dialog{
+  display: none;
+}
+#small-dialog{
+  background: none;
+  @include background-image(linear-gradient(to bottom right, rgba(255,255,255,.8), #faeeab));  
+}
+.inner-dialog{ 
+  .bg_year{
+    position: absolute;
+    font-size: 11rem;
+    z-index: $bottom;
+    color: rgba(255,255,255,.7);
+    
+    font-weight: 800;
+    text-align: left;
+    width: 80%;
+    height: 80%;
+    
+  }
+  .date_field{
+    text-align: center;
+    display: inline-block;
+    @include border-radius(30px);
+    height: 50px;
+    width: 50px;
+    transform: rotate(-7deg);
+    padding: 2px;
+    font-size: 10px;
+    color: white;
+    background-color: magenta;
+    >b:nth-of-type(1){
+      display: block;
+    }
+    >b:nth-of-type(2){
+      font-weight: normal;
+      >b{
+        color: gold;
+        font-weight: bold;
+      }
+    }    
+  }
+  .blog_link{
+    @include border-radius(5px);
+    width: 100%;
+    text-align: center;
+    a{
+      color: white;
+      display: block;
+      @include transition-duration(.420s);
+      background: $logo_bg_over;
+      text-shadow: gray 1px 1px 1px, gray -1px 1px 1px, gray 1px 2px 3px, gray -1px 1px 2px;
+      border: 1px solid black;
+      &:hover,
+      &:focus{
+        text-decoration: none;
+        color: $logo_bg_over;
+        text-shadow: gray 1px 1px 1px, gray -1px 1px 1px, gray 1px 2px 3px, gray -1px 1px 2px;
+        background: $logo_bg;    
+      }
+    }
+  }
+}
+
+    

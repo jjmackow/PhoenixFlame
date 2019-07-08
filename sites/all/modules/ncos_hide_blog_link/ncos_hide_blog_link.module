@@ -1,0 +1,17 @@
+<?php
+
+/**
+ * @file
+ * Creates a field and widget for inserting working or office hours per day
+ */
+
+// @TODO 2012-05-13: it would be nice to include this file in the .info-file, but the OH-block is lost after F5-page refresh.
+// @TODO see http://nodesforbreakfast.com/article/2012/02/20/organize-your-module-code-hookhookinfo-drupal-7
+// @todo for 'multiple blocks per day', see code with string 'multiple blocks per day'.
+
+
+function ncos_hide_blog_link_node_view_alter(&$build) {
+  if (isset($build['links']['blog']['#links']['blog_usernames_blog'])) {
+    unset($build['links']['blog']['#links']['blog_usernames_blog']);
+  }
+}

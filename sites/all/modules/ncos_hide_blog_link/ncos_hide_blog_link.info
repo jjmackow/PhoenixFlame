@@ -1,0 +1,6 @@
+name = Hide Blog Link for personal blogs
+description = Remove's a user's 'personal blog' link from the links section within a node's display.
+package = Blog
+core = 7.x
+
+

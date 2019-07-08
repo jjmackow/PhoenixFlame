@@ -1,0 +1,70 @@
+<?php
+
+/**
+ * @file
+ * Hide Field Module module hooks and main functionality.
+ */
+
+/**
+ * Implements hook_help().
+ */
+function hide_field_label_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#hide_field_label':
+      $filepath = dirname(__FILE__) . '/README.txt';
+      $readme = file_get_contents($filepath);
+      return '<pre>' . $readme . '</pre>';
+
+  }
+}
+
+/**
+ * Implements hook_field_form_field_ui_field_edit_form_alter().
+ */
+function hide_field_label_form_field_ui_field_edit_form_alter(&$form, &$form_state) {
+  $widgets = hide_field_label_get_widgets();
+
+  if (in_array($form['#instance']['widget']['type'], array_keys($widgets))) {
+    $settings = isset($form['#instance']) ? $form['#instance'] : array();
+
+    $form['instance']['hide_field_label'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Hide label for this field'),
+      '#default_value' => isset($settings['hide_field_label']) ? $settings['hide_field_label'] : 0,
+      '#parents' => array('instance', 'hide_field_label'),
+      '#weight' => -5,
+    );
+  }
+}
+
+/**
+ * Implements hook_field_widget_form_alter().
+ */
+function hide_field_label_field_widget_form_alter(&$element, &$form_state, $context) {
+  $widgets = hide_field_label_get_widgets();
+
+  if (in_array($context['instance']['widget']['type'], array_keys($widgets)) && !empty($context['instance']['hide_field_label'])) {
+    $setting = $widgets[$context['instance']['widget']['type']];
+    $element[$setting]['#title_display'] = 'invisible';
+  }
+}
+
+/**
+ * Returns information about supported widgets.
+ *
+ * @return array
+ *   An array containing all the Hide Field Label widgets information.
+ */
+function hide_field_label_get_widgets() {
+  $widgets = array(
+    'text_textfield' => 'value',
+    'text_textarea' => 'value',
+    'text_textarea_with_summary' => 'summary',
+    'number' => 'value',
+    'email_textfield' => 'email',
+  );
+
+  drupal_alter('hide_field_label_widgets', $widgets);
+
+  return $widgets;
+}

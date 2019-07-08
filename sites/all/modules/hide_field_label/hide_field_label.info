@@ -1,0 +1,15 @@
+name = Hide Field Label
+description = Provides a possibility to hide field label in the widget form.
+package = Fields
+core = 7.x
+
+dependencies[] = field_ui
+
+files[] = tests/hide_field_label.test
+
+; Information added by Drupal.org packaging script on 2016-04-15
+version = "7.x-1.0"
+core = "7.x"
+project = "hide_field_label"
+datestamp = "1460699363"
+

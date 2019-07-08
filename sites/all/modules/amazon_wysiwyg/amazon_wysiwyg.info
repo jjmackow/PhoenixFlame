@@ -1,0 +1,14 @@
+name = Amazon Wysiwyg
+description = Server side Amazon widget.
+package = User interface
+core = 7.x
+dependencies[] = amazon
+dependencies[] = wysiwyg
+files[] = tests/amazon_wysiwyg.test
+
+; Information added by Drupal.org packaging script on 2017-11-08
+version = "7.x-2.0-alpha2"
+core = "7.x"
+project = "amazon_wysiwyg"
+datestamp = "1510152191"
+

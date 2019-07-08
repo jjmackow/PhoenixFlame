@@ -1,0 +1,15 @@
+name = Views FractionSlider
+description = Provides views FractionSlider display plugin.
+package = Views
+core = 7.x
+dependencies[] = views
+dependencies[] = fractionslider
+
+files[] = views_fractionslider_style_plugin.inc
+
+; Information added by Drupal.org packaging script on 2017-04-13
+version = "7.x-2.8"
+core = "7.x"
+project = "views_fractionslider"
+datestamp = "1492063745"
+

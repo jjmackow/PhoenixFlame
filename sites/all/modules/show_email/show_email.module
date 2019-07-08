@@ -1,0 +1,70 @@
+<?php
+
+/**
+ * @file
+ * Basically show the user's registered email address.
+ */
+
+/**
+ * Implements hook_permission().
+ */
+function show_email_permission() {
+  return array(
+    'administer show email settings' => array(
+      'title' => t('Administer show email settings'),
+      'description' => t('Access show email settings'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_help().
+ */
+function show_email_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#show_email':
+      return '<p>' . t('This small module is to show the email address in user page.') . '</p>';
+  }
+}
+
+/**
+ * Implements hook_menu().
+ */
+function show_email_menu() {
+  $items['admin/config/people/show_email_settings'] = array(
+    'title' => 'Show Email Settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('show_email_settings'),
+    'access arguments' => array('administer show email settings'),
+    'file' => 'inc/show_email_settings.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_user_view().
+ */
+function show_email_user_view($account, $view_mode, $langcode) {
+  if (variable_get('show_email_enabled', 1) == 1) {
+    $account->content['field_email'] = array(
+      '#theme' => 'field',
+      '#weight' => variable_get('show_email_weight', 100),
+      '#field_type' => 'text',
+      '#label_display' => variable_get('show_email_label_display', 'inline'),
+      '#field_name' => 'field_email',
+      '#entity_type' => 'user',
+      '#bundle' => 'main',
+      '#title' => t('Email'),
+      '#items' => array(
+        array(
+          'value' => $account->mail,
+        ),
+      ),
+      0 => array(
+        '#markup' => l($account->mail, 'mailto:' . $account->mail
+        ),
+      ),
+    );
+  }
+}
